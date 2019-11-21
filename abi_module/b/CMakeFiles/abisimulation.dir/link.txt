@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC  -std=c++0x -pthread -std=c++11 -m64 -I/e906/app/software/osg/software/e1039/share/root/include  -lphool -lg4testbench -shared -Wl,-soname,libabisimulation.so -o libabisimulation.so CMakeFiles/abisimulation.dir/abisimulation.cxx.o CMakeFiles/abisimulation.dir/abisimulation_Dict.C.o -lgeom_svc -linterface_main -lfun4all -lphool 

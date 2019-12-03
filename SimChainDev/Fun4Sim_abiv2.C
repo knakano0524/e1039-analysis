@@ -27,7 +27,7 @@ R__LOAD_LIBRARY(libphg4hit)
 using namespace std;
 
 int Fun4Sim_abiv2(
-	    const int nevent = 5,
+	    const int nevent = 1,
 	    const char *abi_rootfile = "abi_vertexlegacy.root" 
     )
 {
@@ -192,9 +192,11 @@ int Fun4Sim_abiv2(
   //@
   if(gen_legacy){
     E1039PhysicsGen *e1039Phys = new  E1039PhysicsGen();
-    //e1039Phys->enablePythiaDimuon();
+    // e1039Phys->enablePythiaDimuon();
     //e1039Phys->enableCustomDimuon();
     e1039Phys->enableDrellYanGen();
+    //e1039Phys->enableJPsiGen();
+    //e1039Phys->enablePsipGen();
     se->registerSubsystem(e1039Phys);
   }
   //@

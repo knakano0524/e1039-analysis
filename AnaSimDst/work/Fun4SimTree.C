@@ -65,11 +65,20 @@ void DrawDimRecoKin(TTree* tr)
   tr->Draw("dim_reco.mom.M()", "rec_stat==0");
   c1->SaveAs("result/h1_dim_reco_mass.png");
 
+  tr->Draw("dim_reco.mom.M() - dim_true.mom.M()", "rec_stat==0");
+  c1->SaveAs("result/h1_dim_reco_mass_diff.png");
+
   tr->Draw("dim_reco.x1", "rec_stat==0");
   c1->SaveAs("result/h1_dim_reco_x1.png");
 
+  tr->Draw("dim_reco.x1 - dim_true.x1", "rec_stat==0");
+  c1->SaveAs("result/h1_dim_reco_x1_diff.png");
+
   tr->Draw("dim_reco.x2", "rec_stat==0");
   c1->SaveAs("result/h1_dim_reco_x2.png");
+
+  tr->Draw("dim_reco.x2 - dim_true.x2", "rec_stat==0");
+  c1->SaveAs("result/h1_dim_reco_x2_diff.png");
 }
 
 

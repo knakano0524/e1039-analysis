@@ -47,6 +47,7 @@ do
     cmd="$cmd -f $work/input.tar.gz"
     cmd="$cmd -d OUTPUT $work/$id/out"
     cmd="$cmd --append_condor_requirements='(TARGET.GLIDEIN_Site isnt \"UCSD\")'"
+    cmd="$cmd --append_condor_requirements='(TARGET.GLIDEIN_Site isnt \"SU-ITS\")'"
     cmd="$cmd file://`which $work/$id/gridrun.sh` $nevents $id"
     echo "$cmd"
     $cmd

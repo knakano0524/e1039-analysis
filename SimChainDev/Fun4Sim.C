@@ -45,7 +45,7 @@ int Fun4Sim(const int nevent = 10)
   const bool gen_particle = false;
   const bool read_hepmc   = false;
   const bool gen_e906legacy = false; //E906LegacyGen()
-  const bool save_in_acc  = false; //< Set true to save only in-acceptance events into DST.
+  const bool save_in_acc  = true; //< Set true to save only in-acceptance events into DST.
 
   recoConsts *rc = recoConsts::instance();
   rc->set_DoubleFlag("FMAGSTR", FMAGSTR);
@@ -300,8 +300,8 @@ int Fun4Sim(const int nevent = 10)
   //reco->add_eval_list(1);             //include station-2 in eval tree for debugging
   se->registerSubsystem(reco);
 
-  // VertexFit* vertexing = new VertexFit();
-  // se->registerSubsystem(vertexing);
+  VertexFit* vertexing = new VertexFit();
+  se->registerSubsystem(vertexing);
 
   //// Trim minor data nodes (to reduce the DST file size)
   //se->registerSubsystem(new SimDstTrimmer());

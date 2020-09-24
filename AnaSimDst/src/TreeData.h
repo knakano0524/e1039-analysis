@@ -7,6 +7,8 @@ struct EventData {
   int proc_id;
   int par_id[4]; // 2 -> 2
   TLorentzVector par_mom[4];
+  bool nim1;
+  bool fpga1;
   int trig_bits;
   int rec_stat;
   int n_dim_true;
@@ -37,6 +39,8 @@ struct DimuonData {
   TLorentzVector mom_neg;
   double         x1;
   double         x2;
+  double         phi_s;
+  double         phi_s_up;
 
   DimuonData();
   virtual ~DimuonData() {;}

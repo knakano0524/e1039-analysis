@@ -14,6 +14,7 @@ int Fun4SimDst(const int   n_dst_ana=0,
   Fun4AllInputManager *in = new Fun4AllDstInputManager("SimDst");
   se->registerInputManager(in);
 
+  se->registerSubsystem(new AnaRunInfo("lumi_list.txt", "lumi_tot.txt"));
   //se->registerSubsystem(new FilterSimEvent());
 
   Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", fn_udst);
@@ -39,6 +40,7 @@ int Fun4SimDst(const int   n_dst_ana=0,
     string fn_dst = list_dst[i_dst];
     cout << "DST: " << i_dst << "/" << n_dst << ": " << fn_dst << endl;
     in->fileopen(fn_dst);
+    in->SetRunNumber(i_dst+1); /////  Trick to execute InitRun() per DST
     se->run();
   }
 

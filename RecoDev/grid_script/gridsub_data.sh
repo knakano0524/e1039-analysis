@@ -48,7 +48,7 @@ data_file=$(printf 'run_%06d_spin.root' $run_num)
   mkdir -p $work/$run_num/out
   chmod -R 01755 $work/$run_num
 
-  rsync -av $dir_macros/gridrun.sh $work/$run_num/gridrun_data.sh
+  rsync -av $dir_macros/gridrun_data.sh $work/$run_num/gridrun_data.sh
 
   if [ $do_sub == 1 ]; then
     cmd="jobsub_submit"
@@ -59,7 +59,7 @@ data_file=$(printf 'run_%06d_spin.root' $run_num)
     cmd="$cmd -d OUTPUT $work/$run_num/out"
     cmd="$cmd --append_condor_requirements='(TARGET.GLIDEIN_Site isnt \"UCSD\")'"
     cmd="$cmd -f $data_dir/$data_file"
-    cmd="$cmd file://`which $work/$run_num/gridrun.sh` $nevents $run_num"
+    cmd="$cmd file://`which $work/$run_num/gridrun_data.sh` $nevents $run_num"
   
     echo "$cmd"
     $cmd
@@ -67,7 +67,7 @@ data_file=$(printf 'run_%06d_spin.root' $run_num)
     mkdir -p $work/$run_num/input
     rsync -av $work/input.tar.gz $work/$run_num/input
     cd $work/$run_num/
-    $work/$run_num/gridrun.sh $nevents $run_num | tee $work/$run_num/log/log.txt
+    $work/$run_num/gridrun_data.sh $nevents $run_num | tee $work/$run_num/log/log.txt
     cd -
   fi
 done 2>&1 | tee log_gridsub.txt

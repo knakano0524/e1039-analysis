@@ -27,13 +27,13 @@ pwd | tee -a out.txt $CONDOR_DIR_OUTPUT/out.txt
 ls -l $CONDOR_DIR_INPUT
 tar -xzvf $CONDOR_DIR_INPUT/input.tar.gz
 
-ln $(printf '%s/run_%06d_spin.root' $CONDOR_DIR_INPUT $run_number) data.root
+ln $(printf '%s/run_%06d_spin.root' $CONDOR_DIR_INPUT $run_number) data.root 
+#ln $(printf '%s/run_001283_spill_%09d_spin.root' $CONDOR_DIR_INPUT $run_number) data.root #for 1283 long run
 ls -lh | tee -a out.txt $CONDOR_DIR_OUTPUT/out.txt
 
 
 
 FN_SETUP=/e906/app/software/osg/software/e1039/this-e1039.sh
-
 if [ ! -e $FN_SETUP ] ; then # On grid
     FN_SETUP=/cvmfs/seaquest.opensciencegrid.org/seaquest/${FN_SETUP#/e906/app/software/osg/}
 fi

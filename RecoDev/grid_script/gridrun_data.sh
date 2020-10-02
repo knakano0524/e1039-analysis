@@ -52,4 +52,4 @@ fi
 
 mv *.root $CONDOR_DIR_OUTPUT/
 
-echo "gridrun.sh finished!"
+echo "gridrun_data.sh finished!"

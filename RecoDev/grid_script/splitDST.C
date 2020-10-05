@@ -13,7 +13,7 @@ int splitDST(const int nEvents = 0,const int run = 1789){
  se->Verbosity(0);
  Fun4AllInputManager* in = new Fun4AllDstInputManager("DSTIN");
  in->Verbosity(0); 
- in->fileopen(Form("/data2/e1039/dst/run_00%i_spin.root",run));
+ in->fileopen(Form("/data2/e1039/dst/run_%06i_spin.root",run));
  se->registerInputManager(in);
 
   Fun4AllSpillDstOutputManager* out_sp = new Fun4AllSpillDstOutputManager("spill");

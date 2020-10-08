@@ -13,4 +13,6 @@
 #pragma link C++ class AnaSimDst-!;
 #pragma link C++ class AnaRunInfo-!;
 
+#pragma link C++ class DPTriggerAnalyzer-!;
+
 #endif

@@ -41,6 +41,11 @@ int AnaSimDst::process_event(PHCompositeNode* topNode)
   if    (++n_evt % 100000 == 0) cout << n_evt << endl;
   else if (n_evt %  10000 == 0) cout << " . " << flush;
 
+  //cout << "E"
+  //     << " " << mi_evt->get_run_id()
+  //     << " " << mi_evt->get_spill_id()
+  //     << " " << mi_evt->get_event_id()
+  //     << endl;
   ///
   /// Event info
   ///

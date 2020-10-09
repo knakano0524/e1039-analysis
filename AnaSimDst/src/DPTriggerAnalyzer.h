@@ -14,10 +14,6 @@ class SQEvent;
 class SQHitVector;
 
 #define NTRPLANES 4
-//#define NMAXHODOS 16
-//#define NMAXMTRKS 1000
-#define NMAXMHITS 1000000
-
 
 class DPTriggerRoad
 {
@@ -92,34 +88,24 @@ public:
     DPTriggerAnalyzer(const std::string &name = "DPTriggerAnalyzer");
     virtual ~DPTriggerAnalyzer();
 
-#ifndef __CINT__
     int Init(PHCompositeNode *topNode);
-#endif
-    
-    //! module initialization
     int InitRun(PHCompositeNode *topNode);
-    
-    //! event processing
     int process_event(PHCompositeNode *topNode);
-
     int End(PHCompositeNode *topNode);
 
-  	const std::string& get_road_set_file_name() const {
-  		return _road_set_file_name;
-  	}
-
-  	void set_road_set_file_name(const std::string& roadSetFileName) {
-  		_road_set_file_name = roadSetFileName;
-  	}
-
+    const std::string& get_road_set_file_name() const {
+      return _road_set_file_name;
+    }
+    
+    void set_road_set_file_name(const std::string& roadSetFileName) {
+      _road_set_file_name = roadSetFileName;
+    }
+    
     //!Build the trigger matrix by the input roads list
     void buildTriggerMatrix();
 
     //!Test the trigger pattern
     //void analyzeTrigger(DPMCRawEvent* rawEvent);
-
-    //!create the trigger stations hit pattern, return false if one or more plane is missing
-    bool buildHitPattern(int nTrHits, int uniqueTrIDs[]);
 
     //!search for possible roads
     void searchMatrix(MatrixNode* node, int level, int index);
@@ -164,7 +150,8 @@ private:
     SQEvent* _event_header;
     SQHitVector* _hit_vector;
 
-    int uniqueIDs[NMAXMHITS];
+    /// Return a station number (1-4) for hodo planes or "0" for others.  This function should be moved to GeomSvc.
+    short GetHodoStation(const int det_id);
 };
 
 class DPTriggerAnalyzer::MatrixNode

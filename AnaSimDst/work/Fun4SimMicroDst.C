@@ -15,12 +15,12 @@ int Fun4SimMicroDst(const char* fn_udst="uDST.root")
   in->fileopen(fn_udst);
 
   DPTriggerAnalyzer* dptrigger = new DPTriggerAnalyzer();
-  dptrigger->set_road_set_file_name(gSystem->ExpandPathName("$E1039_RESOURCE/trigger/trigger_67.txt"));
+  dptrigger->set_road_set_file_name("$E1039_RESOURCE/trigger/trigger_67.txt");
   se->registerSubsystem(dptrigger);
 
   se->registerSubsystem(new AnaSimDst());
 
-  se->run(100);
+  se->run();
   se->End();
   delete se;
   return 0;

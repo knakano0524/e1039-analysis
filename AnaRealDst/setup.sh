@@ -1,6 +1,8 @@
 DIR_TOP=$(dirname $(readlink -f $BASH_SOURCE))
 
-source /data2/e1039/this-e1039.sh
+source /seaquest/users/kenichi/e1039/git/core-inst/this-e1039.sh
+
+#source /data2/e1039/this-e1039.sh
 export LD_LIBRARY_PATH=$DIR_TOP/inst/lib:$LD_LIBRARY_PATH
 
 function cmake-e1039-ana {

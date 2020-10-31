@@ -5,6 +5,7 @@
 #include <interface_main/SQMCEvent.h>
 #include <interface_main/SQTrackVector.h>
 #include <interface_main/SQDimuonVector.h>
+#include <E906LegacyGen/SQDimuonTruthInfoContainer.h>
 #include <ktracker/SRecEvent.h>
 #include <fun4all/Fun4AllReturnCodes.h>
 #include <phool/getClass.h>
@@ -34,12 +35,18 @@ int AnaSimDst::process_event(PHCompositeNode* topNode)
   ///
   /// Event info
   ///
+  //mo_evt.weight  = mi_evt_true->get_weight();
+  mo_evt.weight  = mi_dim_true->get_Dimuon_xs();
+  // mi_dim_true->get_Dimuon_m();
+
   mo_evt.proc_id = mi_evt_true->get_process_id();
   for (int ii = 0; ii < 4; ii++) {
     mo_evt.par_id [ii] = mi_evt_true->get_particle_id      (ii);
     mo_evt.par_mom[ii] = mi_evt_true->get_particle_momentum(ii);
   }
-  mo_evt.trig_bits  = mi_evt->get_trigger();
+  mo_evt.fpga1      = mi_evt->get_trigger(SQEvent::MATRIX1);
+  mo_evt.nim1       = mi_evt->get_trigger(SQEvent::NIM1);
+  mo_evt.nim2       = mi_evt->get_trigger(SQEvent::NIM2);
   mo_evt.rec_stat   = mi_srec->getRecStatus();
   mo_evt.n_dim_true = mi_vec_dim->size();
   mo_evt.n_dim_reco = mi_srec->getNDimuons();
@@ -122,6 +129,12 @@ int AnaSimDst::GetNodes(PHCompositeNode *topNode)
   if (!mi_evt || !mi_srec || !mi_evt_true || !mi_vec_trk || !mi_vec_dim) {
     return Fun4AllReturnCodes::ABORTEVENT;
   }
+
+  mi_dim_true = findNode::getClass<SQDimuonTruthInfoContainer>(topNode, "DimuonInfo");
+  if (!mi_dim_true) {
+    return Fun4AllReturnCodes::ABORTEVENT;
+  }
+
   return Fun4AllReturnCodes::EVENT_OK;
 }
 

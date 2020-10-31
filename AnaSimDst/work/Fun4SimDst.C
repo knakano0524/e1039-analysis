@@ -24,6 +24,7 @@ int Fun4SimDst(const int   n_dst_ana=0,
   out->AddNode("SQMCEvent");
   out->AddNode("SQTruthTrackVector");
   out->AddNode("SQTruthDimuonVector");
+  out->AddNode("DimuonInfo");
 
   vector<string> list_dst;
   string fn_dst;

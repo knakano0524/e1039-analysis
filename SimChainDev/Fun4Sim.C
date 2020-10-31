@@ -39,13 +39,13 @@ int Fun4Sim(const int nevent = 10)
   const double FMAGSTR = -1.054;
   const double KMAGSTR = -0.951;
 
-  const bool gen_pythia8  = true; // false;
+  const bool gen_pythia8  = false;
   const bool gen_cosmic   = false;
   const bool gen_gun      = false;
   const bool gen_particle = false;
   const bool read_hepmc   = false;
-  const bool gen_e906legacy = false; //E906LegacyGen()
-  const bool save_in_acc  = false; //< Set true to save only in-acceptance events into DST.
+  const bool gen_e906legacy = true; //E906LegacyGen()
+  const bool save_in_acc  = true; //< Set true to save only in-acceptance events into DST.
 
   recoConsts *rc = recoConsts::instance();
   rc->set_DoubleFlag("FMAGSTR", FMAGSTR);
@@ -76,8 +76,8 @@ int Fun4Sim(const int nevent = 10)
   if(gen_pythia8) {    
     PHPythia8 *pythia8 = new PHPythia8();
     //pythia8->Verbosity(99);
-//    pythia8->set_config_file("phpythia8_DY.cfg");
-    pythia8->set_config_file("phpythia8_Jpsi.cfg");
+    pythia8->set_config_file("phpythia8_DY.cfg");
+    //pythia8->set_config_file("phpythia8_Jpsi.cfg");
     pythia8->set_vertex_distribution_mean(0, 0, target_coil_pos_z, 0);
     pythia8->set_embedding_id(1);
     se->registerSubsystem(pythia8);
@@ -176,8 +176,8 @@ int Fun4Sim(const int nevent = 10)
     const bool Psip_gen = false;  
 
     if(drellyan_gen){
-      e906legacy->set_xfRange(0.1, 0.5); //[-1.,1.]
-      e906legacy->set_massRange(0.23, 10.0);// 0.22 and above     
+      e906legacy->set_xfRange(-0.15, 0.95); // (0.1, 0.5); //[-1.,1.]
+      e906legacy->set_massRange(1.5, 5.0); // (0.23, 10.0);// 0.22 and above
       e906legacy->enableDrellYanGen();
     }
    
@@ -277,10 +277,10 @@ int Fun4Sim(const int nevent = 10)
   se->registerSubsystem(dptrigger);
 
   // Event Filter
-  EvtFilter *evt_filter = new EvtFilter();
+//  EvtFilter *evt_filter = new EvtFilter();
   //evt_filter->Verbosity(10);
   //evt_filter->set_trigger_req(1<<5);
-  se->registerSubsystem(evt_filter);
+//  se->registerSubsystem(evt_filter);
 
   // trakcing module
     // trakcing module
@@ -300,8 +300,8 @@ int Fun4Sim(const int nevent = 10)
   //reco->add_eval_list(1);             //include station-2 in eval tree for debugging
   se->registerSubsystem(reco);
 
-  // VertexFit* vertexing = new VertexFit();
-  // se->registerSubsystem(vertexing);
+  VertexFit* vertexing = new VertexFit();
+  se->registerSubsystem(vertexing);
 
   //// Trim minor data nodes (to reduce the DST file size)
   //se->registerSubsystem(new SimDstTrimmer());

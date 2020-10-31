@@ -4,30 +4,40 @@ R__LOAD_LIBRARY(libana_sim_dst)
 #endif
 
 using namespace std;
+TFile* file;
+TTree* tr;
 TCanvas* c1;
+void DrawOneVar(const char* name, const char* var, const int N, const double X0, const double X1);
+void DrawAcc();
+
 void DrawDimTrueKin(TTree* tr);
 void DrawDimRecoKin(TTree* tr);
 void DrawTrkTrueKin(TTree* tr);
 void DrawTrueVar(TTree* tr, const string varname, const string title_x, const int n_x, const double x_lo, const double x_hi);
-void AnaEvents(TTree* tr);
 
 void Fun4SimTree(const char* fname="sim_tree.root", const char* tname="tree")
 {
-  //gSystem->Load("libana_sim_dst.so");
-
-  TFile* file = new TFile(fname);
-  TTree* tr = (TTree*)file->Get(tname);
+  file = new TFile(fname);
+  tr = (TTree*)file->Get(tname);
 
   gSystem->mkdir("result", true);
   c1 = new TCanvas("c1", "");
   c1->SetGrid();
   c1->SetLogy(true);
-  
-  DrawDimTrueKin(tr);
-  DrawDimRecoKin(tr);
-  DrawTrkTrueKin(tr);
 
-  AnaEvents(tr);
+  gStyle->SetOptStat(0000);
+
+  tr->Draw("weight", "!std::isnan(weight)");
+  c1->SaveAs("result/h1_weight.png");
+
+  DrawOneVar("mass", "dim_true.mom.M()", 44, 1, 5.4);
+  DrawOneVar("xF", "dim_true.x1 - dim_true.x2", 60, -0.2, 1.0);
+
+  DrawAcc();
+
+//  DrawDimTrueKin(tr);
+//  DrawDimRecoKin(tr);
+//  DrawTrkTrueKin(tr);
 
   exit(0);
 }
@@ -35,6 +45,100 @@ void Fun4SimTree(const char* fname="sim_tree.root", const char* tname="tree")
 ///
 /// Functions below
 ///
+void DrawOneVar(const char* name, const char* var, const int N, const double X0, const double X1)
+{
+  TH1* h1_all = new TH1D("h1_all", "", N, X0, X1);
+  h1_all->GetSumw2();
+  tr->Project("h1_all", var, "std::isnan(weight) ? 0 : weight");
+  //h1_all->Draw("E1");
+  //c1->SaveAs("result/h1_m_all.png");
+
+  TH1* h1_rec = new TH1D("h1_rec", "", N, X0, X1);
+  h1_rec->GetSumw2();
+  tr->Project("h1_rec", var, "(std::isnan(weight) || rec_stat!=0) ? 0 : weight");
+
+  TH1* h1_nim2 = new TH1D("h1_nim2", "", N, X0, X1);
+  h1_nim2->GetSumw2();
+  tr->Project("h1_nim2", var, "(std::isnan(weight) || rec_stat!=0 || !nim2) ? 0 : weight");
+
+  TH1* h1_fpga1 = new TH1D("h1_fpga1", "", N, X0, X1);
+  h1_fpga1->GetSumw2();
+  tr->Project("h1_fpga1", var, "(std::isnan(weight) || rec_stat!=0 || !fpga1) ? 0 : weight");
+
+  h1_all  ->SetLineColor(kBlack);
+  h1_rec  ->SetLineColor(kRed);
+  h1_nim2 ->SetLineColor(kGreen);
+  h1_fpga1->SetLineColor(kBlue);
+  
+  //h1_rec  ->SetLineWidth(3);
+
+  ostringstream oss;
+  oss << "GMC;" << name << ";Weighted yield";
+
+  THStack hs("hs", oss.str().c_str());
+  hs.Add(h1_all  , "E1");
+  hs.Add(h1_rec  , "E1");
+  hs.Add(h1_nim2 , "E1");
+  hs.Add(h1_fpga1, "E1");
+  hs.Draw("nostack");
+
+  TLegend leg (0.75, 0.75, 0.99, 0.99);
+  leg.AddEntry(h1_all  , "All in acceptance", "l");
+  leg.AddEntry(h1_rec  , "Reconstructed", "l");
+  leg.AddEntry(h1_nim2 , "NIM2 fired", "l");
+  leg.AddEntry(h1_fpga1, "FPGA1 fired", "l");
+  leg.SetTextFont(22);
+  leg.SetBorderSize(1);
+  leg.SetFillColor(0);
+  leg.Draw();
+
+  oss.str("");
+  oss << "result/h1_" << name << ".png";
+  c1->SaveAs(oss.str().c_str());
+
+  delete h1_all  ;
+  delete h1_rec  ;
+  delete h1_nim2 ;
+  delete h1_fpga1;
+}
+
+void DrawAcc()
+{
+  c1->SetLogy(false);
+
+  TH1* h2_rec = new TH2D("h2_rec", "Weighted yield: Reconstructed;mass;xF", 22, 1, 5.4,  30, -0.2, 1.0);
+  h2_rec->GetSumw2();
+  tr->Project("h2_rec", "(dim_true.x1 - dim_true.x2):(dim_true.mom.M())", "(std::isnan(weight) || rec_stat!=0) ? 0 : weight");
+  h2_rec->Draw("colz");
+  c1->SaveAs("result/h2_rec.png");
+
+  TH1* h2_nim2 = new TH2D("h2_nim2", "Weighted yield: NIM2 fired;mass;xF", 22, 1, 5.4,  30, -0.2, 1.0);
+  h2_nim2->GetSumw2();
+  tr->Project("h2_nim2", "(dim_true.x1 - dim_true.x2):(dim_true.mom.M())", "(std::isnan(weight) || rec_stat!=0 || !nim2) ? 0 : weight");
+  h2_nim2->Draw("colz");
+  c1->SaveAs("result/h2_nim2.png");
+
+  TH1* h2_fpga1 = new TH2D("h2_fpga1", "Weighted yield: FPGA1 fired;mass;xF", 22, 1, 5.4,  30, -0.2, 1.0);
+  h2_fpga1->GetSumw2();
+  tr->Project("h2_fpga1", "(dim_true.x1 - dim_true.x2):(dim_true.mom.M())", "(std::isnan(weight) || rec_stat!=0 || !fpga1) ? 0 : weight");
+  h2_fpga1->Draw("colz");
+  c1->SaveAs("result/h2_fpga1.png");
+
+  c1->SetLogz(true);
+
+  TH1* h2_acc_nim2 = (TH1*)h2_nim2->Clone("h2_acc_nim2");
+  h2_acc_nim2->SetTitle("Trigger acceptance: NIM2");
+  h2_acc_nim2->Divide(h2_rec);
+  h2_acc_nim2->Draw("colz");
+  c1->SaveAs("result/h2_acc_nim2.png");
+
+  TH1* h2_acc_fpga1 = (TH1*)h2_fpga1->Clone("h2_acc_fpga1");
+  h2_acc_fpga1->SetTitle("Trigger acceptance: FPGA1");
+  h2_acc_fpga1->Divide(h2_rec);
+  h2_acc_fpga1->Draw("colz");
+  c1->SaveAs("result/h2_acc_fpga1.png");
+}
+
 void DrawDimTrueKin(TTree* tr)
 {
   tr->Draw("n_dim_true");
@@ -124,29 +228,4 @@ void DrawTrueVar(TTree* tr, const string varname, const string title_x, const in
 
   delete h1_all;
   delete h1_rec;
-}
-
-void AnaEvents(TTree* tr)
-{
-  typedef map<int, int> IntCount_t;
-  IntCount_t id_cnt;
-  DimuonList* list_dim = new DimuonList();
-  tr->SetBranchAddress("dim_true", &list_dim);
-
-  int n_ent = tr->GetEntries();
-  cout << "AnaEvents(): n = " << n_ent << endl;
-  for (int i_ent = 0; i_ent < n_ent; i_ent++) {
-    if ((i_ent+1) % (n_ent/10) == 0) cout << "  " << 100*(i_ent+1)/n_ent << "%" << flush;
-    tr->GetEntry(i_ent);
-    for (DimuonList::iterator it = list_dim->begin(); it != list_dim->end(); it++) {
-      DimuonData* dd = &(*it);
-      int pdg_id = dd->pdg_id;
-      if (id_cnt.find(pdg_id) == id_cnt.end()) id_cnt[pdg_id] = 1;
-      else                                     id_cnt[pdg_id]++;
-    }
-  }
-  cout << endl;
-  for (IntCount_t::iterator it = id_cnt.begin(); it != id_cnt.end(); it++) {
-    cout << setw(10) << it->first << "  " << setw(10) << it->second << endl;
-  }
 }

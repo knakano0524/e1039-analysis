@@ -2,7 +2,7 @@
 using namespace std;
 
 EventData::EventData()
-  : proc_id(0), trig_bits(0), rec_stat(0), n_dim_true(0), n_dim_reco(0)
+  : weight(0), proc_id(0), fpga1(false), nim1(false), nim2(false), rec_stat(0), n_dim_true(0), n_dim_reco(0)
 {
   for (int ii = 0; ii < 4; ii++) {
     par_id [ii] = 0;

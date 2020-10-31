@@ -12,6 +12,7 @@ class SRecEvent;
 class SQMCEvent;
 class SQTrackVector;
 class SQDimuonVector;
+class SQDimuonTruthInfoContainer;
 
 /// An example class to analyze the simulated uDST file.
 class AnaSimDst: public SubsysReco {
@@ -21,6 +22,7 @@ class AnaSimDst: public SubsysReco {
   SQMCEvent     * mi_evt_true;
   SQTrackVector * mi_vec_trk;
   SQDimuonVector* mi_vec_dim;
+  SQDimuonTruthInfoContainer* mi_dim_true;
 
   /// Output
   TFile* file;

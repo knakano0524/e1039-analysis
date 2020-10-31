@@ -4,10 +4,13 @@
 #include <TLorentzVector.h>
 
 struct EventData {
+  double weight;
   int proc_id;
   int par_id[4]; // 2 -> 2
   TLorentzVector par_mom[4];
-  int trig_bits;
+  bool fpga1;
+  bool nim1;
+  bool nim2;
   int rec_stat;
   int n_dim_true;
   int n_dim_reco;

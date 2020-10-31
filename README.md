@@ -5,46 +5,49 @@ to conveniently analyze the trigger acceptance.
 
 ## Analysis Flow
 
-1. Download this package
-
+1. Download this package and switch the branch
 ```
 git clone https://github.com/knakano0524/e1039-analysis.git
 cd e1039-analysis
 git checkout ana_trig_acc
 ```
-
-1. Event generation = `SimChainDev`
+1. Event generation
+    - Via `SimChainDev`
     - You can skip this step and use an existing dataset
-        - 20k generated events/job $\times$ 800 jobs
+        - 20k generated events/job * 800 jobs
         - OK = 731, Bad job host = 64, Run-time limit = 5
-        - Stored in {\scriptsize\tt /pnfs/e906/persistent/users/kenichi/sim\_data/dy\_acc\_20201101\_0[123]}
-    	- Listed in {\tt e1039-analysis/AnaSimDst/work/list\_dst.txt}
-    - `Fun4Sim.C` has been modified
-        - E906LegacyGen
-    	- mass, xF
+        - Stored in `/pnfs/e906/persistent/users/kenichi/sim_data/dy_acc_20201101_0[123]`
+    - The generation condition (in `Fun4Sim.C`) has been modified
+        - Drell-Yan process by E906LegacyGen
+    	- Mass range
+	- xF range
+	- In-acceptance events are saved into DSTs
+    - The procedure is explained below
+1. Event analysis
+    - Via `AnaSimDst`
+    - The list of DSTs for analysis (i.e. `list_dst.txt`) by default points to the existing dataset mentioned above
+    - The procedure is explained below
+
+## Procedure for Event Generation
+
+You better read `SimChainDev/README.md` beforehand.
 
 ```
 cd SimChainDev
-source
-source
-./gridsub.sh 
+source /e906/app/software/script/setup-jobsub-spinquest.sh
+kinit
+./gridsub.sh dy_acc_20201101_01 1 100 20000
 ```
 
-1. Event analysis = `AnaSimDst`
-    - Make a list of DSTs for analysis
-        - The default list `list_dst.txt` contains the existing dataset mentioned above.
-	- You can make your own list by following `AnaSimDst/README.md`.
-    - Compile the analysis module
-	- As explained in `AnaSimDst/README.md`.
-    - Run ``Fun4SimDst.C'', ``Fun4SimMicroDst.C'' & ``Fun4SimTree.C''
-        - These macros have been modified.
-    - Various plots are outputted to `result/`.
+## Procedure for Event Analysis
 
-```
-root -b Fun4SimDst.C
-root -b Fun4SimMicroDst.C
-root -b Fun4SimTree.C
-```
+You better read `AnaSimDst/README.md` beforehand.
 
-
+1. Update the DST list only if you generate your own events
+1. Compile the analysis module
+    - As explained in `AnaSimDst/README.md`.
+1. Run `Fun4SimDst.C`, `Fun4SimMicroDst.C` & `Fun4SimTree.C`
+    - `DPTriggerAnalyzer` is registered in `Fun4SimMicroDst.C`.
+      You can apply a new roadset for test here.
+1. Look at a set of plots in `result/`.
 

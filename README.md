@@ -29,7 +29,7 @@ to conveniently analyze the trigger acceptance.
 ## Procedure for Event Generation
 
 Below is an example of overall commands.
-Please take a look at `[SimChainDev/README.md](SimChainDev/README.md)` to understand the meaning of each command.
+Please take a look at [SimChainDev/README.md](SimChainDev/README.md) to understand the meaning of each command.
 
 ```
 cd SimChainDev
@@ -42,7 +42,7 @@ kinit
 
 You might have to update the DST list _if_ you generate your own events.
 Below is an example of overall commands.
-Please take a look at `[AnaSimDst/README.md](AnaSimDst/README.md)` to understand the meaning of each command.
+Please take a look at [`AnaSimDst/README.md`](AnaSimDst/README.md) to understand the meaning of each command.
 
 ```
 cd AnaSimDst

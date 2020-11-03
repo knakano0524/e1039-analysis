@@ -29,7 +29,7 @@ to conveniently analyze the trigger acceptance.
 ## Procedure for Event Generation
 
 Below is an example of overall commands.
-Please take a look at [SimChainDev/README.md](SimChainDev/README.md) to understand the meaning of each command.
+Please take a look at [`SimChainDev/README.md`](SimChainDev/README.md) to understand the meaning of each command.
 
 ```
 cd SimChainDev

@@ -1,6 +1,6 @@
-Command: ./make-dst-list.sh /pnfs/e906/persistent/users/kenichi/SimChainDev/dy_acc_20201101_01 /pnfs/e906/persistent/users/kenichi/SimChainDev/dy_acc_20201101_02 /pnfs/e906/persistent/users/kenichi/SimChainDev/dy_acc_20201101_03
-Time: 2020-10-30 19:12:19
-Directory = /pnfs/e906/persistent/users/kenichi/SimChainDev/dy_acc_20201101_01
+Command: ./make-dst-list.sh /pnfs/e906/persistent/users/kenichi/sim_data/dy_acc_20201101_01 /pnfs/e906/persistent/users/kenichi/sim_data/dy_acc_20201101_02 /pnfs/e906/persistent/users/kenichi/sim_data/dy_acc_20201101_03
+Time: 2020-11-03 03:40:58
+Directory = /pnfs/e906/persistent/users/kenichi/sim_data/dy_acc_20201101_01
         1/out/DST.root      29 MB 
         2/out/DST.root      29 MB 
         3/out/DST.root      30 MB 
@@ -198,7 +198,7 @@ Directory = /pnfs/e906/persistent/users/kenichi/SimChainDev/dy_acc_20201101_01
       198/out/DST.root      28 MB 
       199/out/DST.root      28 MB 
       200/out/DST.root      29 MB 
-Directory = /pnfs/e906/persistent/users/kenichi/SimChainDev/dy_acc_20201101_02
+Directory = /pnfs/e906/persistent/users/kenichi/sim_data/dy_acc_20201101_02
         1/out/DST.root      28 MB 
         2/out/DST.root      30 MB 
         4/out/DST.root      30 MB 
@@ -398,7 +398,7 @@ Directory = /pnfs/e906/persistent/users/kenichi/SimChainDev/dy_acc_20201101_02
       198/out/DST.root      28 MB 
       199/out/DST.root      30 MB 
       200/out/DST.root      28 MB 
-Directory = /pnfs/e906/persistent/users/kenichi/SimChainDev/dy_acc_20201101_03
+Directory = /pnfs/e906/persistent/users/kenichi/sim_data/dy_acc_20201101_03
         3/out/DST.root      29 MB 
         4/out/DST.root      28 MB 
         5/out/DST.root      29 MB 

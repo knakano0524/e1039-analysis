@@ -1,7 +1,10 @@
 DIR_TOP=$(dirname $(readlink -f $BASH_SOURCE))
 
+## This analysis uses a special e1039-core version for now,
+## in which the NIM2 logic in DPTriggerAnalyzer has been modified.
+
+source /data2/analysis/kenichi/e1039/core-inst/this-e1039.sh
 #source /e906/app/software/osg/software/e1039/this-e1039.sh
-source /seaquest/users/kenichi/e1039/git/knakano0524/core-inst/this-e1039.sh
 #source /e906/app/software/osg/users/$USER/e1039/core/this-e1039.sh
 export LD_LIBRARY_PATH=$DIR_TOP/inst/lib:$LD_LIBRARY_PATH
 

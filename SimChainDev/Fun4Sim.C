@@ -271,9 +271,7 @@ int Fun4Sim(const int nevent = 10)
 
   // Trigger Emulator
   DPTriggerAnalyzer* dptrigger = new DPTriggerAnalyzer();
-  dptrigger->set_hit_container_choice("Vector");
-  dptrigger->set_road_set_file_name(gSystem->ExpandPathName("$E1039_RESOURCE/trigger/trigger_67.txt"));
-  //dptrigger->Verbosity(99);
+  dptrigger->set_road_set_file_name("$E1039_RESOURCE/trigger/trigger_67.txt");
   se->registerSubsystem(dptrigger);
 
   // Event Filter

@@ -11,7 +11,7 @@ list(REMOVE_ITEM dist_headers ${non_dist_headers})
 add_custom_command (
   OUTPUT ana_real_dst_Dict.cc
   COMMAND rootcint
-  ARGS -f ana_real_dst_Dict.cc -c
+  ARGS -f ana_real_dst_Dict.cc -c -noIncludePaths -inlineInputHeader 
     -I$ENV{OFFLINE_MAIN}/include/ -I${ROOT_PREFIX}/include/
     ${dist_headers}
     ${PROJECT_SOURCE_DIR}/LinkDef.h
@@ -37,6 +37,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -I$ENV{OFFLINE_MAIN}/in
 add_library(ana_real_dst SHARED ${sources} ana_real_dst_Dict.cc)
 target_link_libraries(ana_real_dst -L$ENV{OFFLINE_MAIN}/lib fun4all interface_main geom_svc decoder_maindaq)
 install(TARGETS ana_real_dst DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+
+install(FILES ${dist_headers} DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
 
 # Install the pcm files in case of ROOT 6.
 execute_process(COMMAND root-config --version OUTPUT_VARIABLE ROOT_VER)

@@ -10,28 +10,34 @@ class TH2;
 class AnaRealDst: public SubsysReco {
   static const std::vector<std::string> list_det_name;
   std::vector<int> list_det_id;
+  bool use_trig_hit;
 
   TFile* f_out;
   TTree* tree;
-  char   b_det_name[16];
-  int    b_det;
-  int    b_ele;
-  double b_time;
+  int    b_run;
+  int    b_evt;
+  int    b_inte_max;
+  int    b_fpga1_0;
+  int    b_fpga1_1;
+  int    b_fpga1_2;
 
   TH1*   h1_evt_cnt;
   TH1*   h1_ele[99];
   TH1*   h1_ele_all[99];
   TH1*   h1_time[99];
+  TH1*   h1_time_all[99];
   TH1*   h1_nhit[99];
   TH1*   h1_nhit_all[99];
 
  public:
-  AnaRealDst() {;}
+  AnaRealDst();
   virtual ~AnaRealDst() {;}
   int Init(PHCompositeNode *topNode);
   int InitRun(PHCompositeNode *topNode);
   int process_event(PHCompositeNode *topNode);
   int End(PHCompositeNode *topNode);
+
+  void use_trigger_hit() { use_trig_hit = true; }
 };
 
 #endif /* _ANA_REAL_DST__H_ */

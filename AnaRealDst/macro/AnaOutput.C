@@ -13,6 +13,7 @@ void AnaOutput()
     exit(1);
   }
 
+  gStyle->SetOptStat(0);
   TCanvas* c1 = new TCanvas("c1", "");
   c1->SetGrid();
 
@@ -40,19 +41,28 @@ void AnaOutput()
   h1_inte_0->SetLineColor(kBlack);
   h1_inte_1->SetLineColor(kBlue);
   h1_inte_2->SetLineColor(kRed);
+  h1_inte_0->SetLineWidth(3);
 
   THStack hs("hs", ";Max(RF-08...RF+08);N of NIM3 events");
   hs.Add(h1_inte_0);
-  hs.Add(h1_inte_1);
+  //hs.Add(h1_inte_1);
   hs.Add(h1_inte_2);
   hs.Draw("nostack");
+  TLegend leg(0.5, 0.8, 0.99, 0.99);
+  leg.AddEntry(h1_inte_0, "Real FPGA1 trigger fired", "l");
+  leg.AddEntry(h1_inte_2, "Emulated FPGA1 trigger fired", "l");
+  leg.SetTextFont(22);
+  leg.SetBorderSize(1);
+  leg.SetFillColor(0);
+  leg.Draw();
   c1->SaveAs("h1_inte_fpga.png");  
 
   int bin0 = 2; // Exclude the 1st bin (inte = 0)
-  int bin1 = h1_inte_0->FindBin(1000);
+  int bin1 = h1_inte_0->FindBin(1199);
   ofstream ofs("result.txt");
   ofs << "N of chained trees = " << tree->GetNtrees() << "\n"
       << "N of NIM3 events = " << (int)h1_inte->Integral() << "\n\n"
+      << "Intensity range = bins " << bin0 << "-" << bin1 << "\n\n"
       << "n_0 = " << (int)h1_inte_0->Integral(bin0, bin1) << "\n"
       << "n_1 = " << (int)h1_inte_1->Integral(bin0, bin1) << "\n"
       << "n_2 = " << (int)h1_inte_2->Integral(bin0, bin1) << "\n"

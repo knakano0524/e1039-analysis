@@ -3,14 +3,6 @@ DIR_SCRIPT=$(dirname $(readlink -f $BASH_SOURCE))
 source $DIR_SCRIPT/config_common.sh || exit
 
 ##
-## Parameters that user should adjust first
-##
-DIR_INPUT=$DIR_SCRIPT
-LIST_INPUT_FILES='*.C list_spill_good.txt ../inst'
-USAGE_MODEL=DEDICATED,OPPORTUNISTIC # ,OFFSITE
-LIFE_TIME=short # short (3h), medium (8h) or long (23h)
-
-##
 ## Parse command-line options
 ##
 VERBOSE=no

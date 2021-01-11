@@ -1,6 +1,7 @@
 #!/bin/bash
 DIR_SCRIPT=$(dirname $(readlink -f $BASH_SOURCE))
-source $DIR_SCRIPT/config_common.sh || exit
+cd $DIR_SCRIPT
+source config_common.sh || exit
 
 ##
 ## Parse command-line options

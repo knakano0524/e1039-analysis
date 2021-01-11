@@ -59,6 +59,16 @@ You have to set at least the following parameters at the beginning;
 - `DIR_INPUT`
 - `LIST_INPUT_FILES`
 
+### `execute_single.sh`
+
+This script receives a set of parameters and execute your ROOT macro.
+Probably you should modify this script so that
+- The shell environment is properly set up for your macro and
+- The parameter set is properly passed to your macro.
+
+The handling of input/output files is limited since this script will be run on GRID.
+All output files that you want to keep have to be moved into `$CONDOR_DIR_OUTPUT`.
+
 ### `execute_multiple.sh`
 
 This script reads the parameter-list file and submits a job of `execute_single.sh` per parameter set.
@@ -96,16 +106,6 @@ Or you can create multiple list files, in order to split job submissions, and us
 ```
 ./execute_multiple.sh -g -f list_argument_028700.txt
 ```
-
-### `execute_single.sh`
-
-This script receives a set of parameters and execute your ROOT macro.
-Probably you should modify this script so that
-- The shell environment is properly set up for your macro and
-- The parameter set is properly passed to your macro.
-
-The handling of input/output files is limited since this script will be run on GRID.
-All output files that you want to keep have to be moved into `$CONDOR_DIR_OUTPUT`.
 
 ## Check of Job Outputs
 

@@ -53,7 +53,7 @@ while read -a VARS ; do
 	(( N_BAD_ROOT++ ))
 	echo "Bad ROOT file: $ID"
     fi
-done <$FN_ARG_LIST
+done <$DIR_SCRIPT/$FN_ARG_LIST
 
 echo "...done."
 echo

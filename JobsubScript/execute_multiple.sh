@@ -61,7 +61,7 @@ echo "------------------------------"
 ##
 ## Work on each argument
 ##
-test $LINE_MAX -le 0 && LINE_MAX=$(cat $FN_ARG_LIST | wc -l)
+test $LINE_MAX -le 0 && LINE_MAX=$(cat $DIR_SCRIPT/$FN_ARG_LIST | wc -l)
 I_LINE=0 # To be incremented
 while read -a VARS ; do
     if [ $(( ++I_LINE )) -lt $LINE_MIN -o $I_LINE -gt $LINE_MAX ] ; then
@@ -118,4 +118,4 @@ while read -a VARS ; do
 	export CONDOR_DIR_OUTPUT=$DIR_WORK/$ID/out
 	$DIR_WORK/input/$FN_EXE_SIN ${VARS[*]} 2>&1 | tee $DIR_WORK/$ID/log_job.txt
     fi
-done <$FN_ARG_LIST 2>&1 | tee log_execute_multiple.txt
+done <$DIR_SCRIPT/$FN_ARG_LIST 2>&1 | tee log_execute_multiple.txt

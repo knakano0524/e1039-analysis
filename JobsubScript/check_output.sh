@@ -43,7 +43,7 @@ while read -a VARS ; do
     if [ ! -e $FN_LOG ] ; then
 	(( N_NO_LOG++ ))
 	echo "No log file: $ID"
-    elif ! grep -q 'execute_single.sh finished!' $FN_LOG ; then
+    elif ! grep -q 'execute_macro.sh finished!' $FN_LOG ; then
 	(( N_BAD_LOG++ ))
 	echo "Bad log file: $ID"
     elif [ ! -e $FN_ROOT ] ; then

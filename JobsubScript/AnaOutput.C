@@ -1,76 +1,51 @@
-#include <glob.h>
 
-void AnaOutput()
+void AnaOutputInTime()
 {
-  TChain* tree = new TChain("tree");
-  glob_t gl;
-  glob("dir_job_20201231/*/out/output.root", GLOB_TILDE, 0, &gl);
-  for (int ii = 0; ii < gl.gl_pathc; ii++) tree->Add(gl.gl_pathv[ii]);
-  globfree(&gl);
-  cout << "N of chained trees = " << tree->GetNtrees() << endl;
-  if (tree->GetNtrees() == 0) {
-    cout << "  No tree strangely.  Abort." << endl;
-    exit(1);
-  }
+  const int N_RUN = 6;
+  const int LIST_RUN[N_RUN] = { 24500, 25000, 26000, 27000, 28000, 28700 };
 
-  gStyle->SetOptStat(0);
+  const int N_PL = 8;
+  const char* LIST_PL[N_PL] = { "H1T", "H1B", "H2T", "H2B", "H3T", "H3B", "H4T", "H4B" };
+
+  ostringstream oss;
+
+  gSystem->mkdir("result", true);
   TCanvas* c1 = new TCanvas("c1", "");
   c1->SetGrid();
+ 
+  TFile* file[N_RUN];
+  for (int ir = 0; ir < N_RUN; ir++) {
+    int run = LIST_RUN[ir];
+    cout << "Run " << run << endl;
+    oss.str("");
+    oss << "dir_job_20210208/" << run << "/out/output.root";
+    file[ir] = new TFile(oss.str().c_str());
+    if (! file[ir]->IsOpen()) {
+      cerr << "! file[ir]->IsOpen()\n";
+      continue;
+    }
 
-  TH1* h2_inte_run = new TH2D("h2_inte_run", "N of NIM3 events;Run ID;Max(RF-08...RF+08);", 100, 28050, 28750,  40, 0, 8000);
-  tree->Project("h2_inte_run", "inte_max:run");
-  h2_inte_run->Draw("colz");
-  c1->SaveAs("h2_inte_run.png");
+    for (int ipl = 0; ipl < N_PL; ipl++) {
+      string plane = LIST_PL[ipl];
+      oss.str("");
+      oss << "h1_time_all_" << plane;
+      TH1* h1_time_all = (TH1*)file[ir]->Get(oss.str().c_str());
+      if (! h1_time_all) { cerr << "! h1_time_all\n"; exit(1); }
 
-  c1->SetLogy(true);
+      oss.str("");
+      oss << "h1_time_" << plane;
+      TH1* h1_time = (TH1*)file[ir]->Get(oss.str().c_str());
+      if (! h1_time) { cerr << "! h1_time\n"; exit(1); }
 
-  TH1* h1_inte = new TH1D("h1_inte", ";Max(RF-08...RF+08);N of NIM3 events", 20, 0, 20000);
-  tree->Project("h1_inte", "inte_max");
-  h1_inte->Draw();
-  c1->SaveAs("h1_inte.png");
-
-  int I_N = 50;
-  double I_MIN =    0;
-  double I_MAX = 5000;
-  TH1* h1_inte_0 = new TH1D("h1_inte_0", "", I_N, I_MIN, I_MAX);
-  TH1* h1_inte_1 = new TH1D("h1_inte_1", "", I_N, I_MIN, I_MAX);
-  TH1* h1_inte_2 = new TH1D("h1_inte_2", "", I_N, I_MIN, I_MAX);
-  tree->Project("h1_inte_0", "inte_max", "fpga1_0>0");
-  tree->Project("h1_inte_1", "inte_max", "fpga1_1>0");
-  tree->Project("h1_inte_2", "inte_max", "fpga1_2>0");
-  h1_inte_0->SetLineColor(kBlack);
-  h1_inte_1->SetLineColor(kBlue);
-  h1_inte_2->SetLineColor(kRed);
-  h1_inte_0->SetLineWidth(3);
-
-  THStack hs("hs", ";Max(RF-08...RF+08);N of NIM3 events");
-  hs.Add(h1_inte_0);
-  //hs.Add(h1_inte_1);
-  hs.Add(h1_inte_2);
-  hs.Draw("nostack");
-  TLegend leg(0.5, 0.8, 0.99, 0.99);
-  leg.AddEntry(h1_inte_0, "Real FPGA1 trigger fired", "l");
-  leg.AddEntry(h1_inte_2, "Emulated FPGA1 trigger fired", "l");
-  leg.SetTextFont(22);
-  leg.SetBorderSize(1);
-  leg.SetFillColor(0);
-  leg.Draw();
-  c1->SaveAs("h1_inte_fpga.png");  
-
-  int bin0 = 2; // Exclude the 1st bin (inte = 0)
-  int bin1 = h1_inte_0->FindBin(1199);
-  ofstream ofs("result.txt");
-  ofs << "N of chained trees = " << tree->GetNtrees() << "\n"
-      << "N of NIM3 events = " << (int)h1_inte->Integral() << "\n\n"
-      << "Intensity range = bins " << bin0 << "-" << bin1 << "\n\n"
-      << "n_0 = " << (int)h1_inte_0->Integral(bin0, bin1) << "\n"
-      << "n_1 = " << (int)h1_inte_1->Integral(bin0, bin1) << "\n"
-      << "n_2 = " << (int)h1_inte_2->Integral(bin0, bin1) << "\n"
-      << "n_0 = " << (int)h1_inte_0->Integral(bin0, I_N+1) << "\n"
-      << "n_1 = " << (int)h1_inte_1->Integral(bin0, I_N+1) << "\n"
-      << "n_2 = " << (int)h1_inte_2->Integral(bin0, I_N+1) << "\n"
-      << endl;
-  ofs.close();
+      h1_time_all->SetLineWidth(2);
+      h1_time    ->SetLineColor(kRed);
+      h1_time_all->Draw();
+      h1_time    ->Draw("same");
+      oss.str("");
+      oss << "result/h1_time_" << plane << "_" << run << ".png";
+      c1->SaveAs(oss.str().c_str());
+    }
+  }
 
   exit(0);
 }

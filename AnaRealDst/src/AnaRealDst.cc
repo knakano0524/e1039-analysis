@@ -16,7 +16,8 @@
 #include "AnaRealDst.h"
 using namespace std;
 
-const vector<string> AnaRealDst::list_det_name = { "H1T", "H1B", "H1L", "H1R" };
+//const vector<string> AnaRealDst::list_det_name = { "H1T", "H1B", "H1L", "H1R" };
+const vector<string> AnaRealDst::list_det_name = { "H1T", "H1B", "H2T", "H2B", "H3T", "H3B", "H4T", "H4B" };
 
 AnaRealDst::AnaRealDst()
   : use_trig_hit(false)
@@ -65,9 +66,9 @@ int AnaRealDst::Init(PHCompositeNode* topNode)
     oss << name << ";Element ID;Hit count";
     h1_ele_all[i_det]->SetTitle(oss.str().c_str());
 
-    int    TN = use_trig_hit ? 140 : 200 ;
-    double T0 = use_trig_hit ? 700 : 2190.5*4/9 ;
-    double T1 = use_trig_hit ? 840 : 2390.5*4/9 ;
+    int    TN = use_trig_hit ? 200 : 450 ;
+    double T0 = use_trig_hit ? 690 : 2150.5*4/9 ;
+    double T1 = use_trig_hit ? 890 : 2600.5*4/9 ;
 
     oss.str("");
     oss << "h1_time_" << name;
@@ -144,7 +145,7 @@ int AnaRealDst::process_event(PHCompositeNode* topNode)
   ///
   /// Event selection
   ///
-  if (! event->get_trigger(SQEvent::NIM3)) {
+  if (! event->get_trigger(SQEvent::NIM3)) { // SQEvent::MATRIX1
     return Fun4AllReturnCodes::EVENT_OK;
   }
 

@@ -53,7 +53,7 @@ fi
 rm -rf   $DIR_WORK/input
 mkdir -p $DIR_WORK/input
 cd $DIR_INPUT
-cp -a $DIR_SCRIPT/$FN_EXE_SIN $DIR_WORK/input
+cp -a $DIR_SCRIPT/$FN_EXE_MAC $DIR_WORK/input
 echo "---- input.tar.gz ------------"
 tar czvf $DIR_WORK/input/input.tar.gz $LIST_INPUT_FILES
 echo "------------------------------"
@@ -85,8 +85,12 @@ while read -a VARS ; do
     #chmod -R 01755 $DIR_WORK/$ID
 
     if [ $USE_GRID = yes ] ; then
-	CMD="jobsub_submit"
-	CMD+=" -g --OS=SL7 --use_gftp --resource-provides=usage_model=$USAGE_MODEL -e IFDHC_VERSION --expected-lifetime='$LIFE_TIME'"
+	CMD="jobsub_submit --grid"
+	#CMD+=" -g --OS=SL7 --use_gftp --resource-provides=usage_model=$USAGE_MODEL -e IFDHC_VERSION --expected-lifetime='$LIFE_TIME'"
+	CMD+=" --OS=SL7"
+	#CMD+=" -l '+SingularityImage=\"/cvmfs/singularity.opensciencegrid.org/fermilab/fnal-wn-sl7:latest\"'"
+	#CMD+=" --append_condor_requirements='(TARGET.HAS_SINGULARITY=?=true)'"
+	CMD+=" --use_gftp --resource-provides=usage_model=$USAGE_MODEL -e IFDHC_VERSION --expected-lifetime='$LIFE_TIME'"
 	CMD+=" --mail_never"
 	CMD+=" -L $DIR_WORK/$ID/log_job.txt"
 	CMD+=" -f $DIR_WORK/input/input.tar.gz"
@@ -97,13 +101,7 @@ while read -a VARS ; do
 	    fi
 	done
 	CMD+=" -d OUTPUT $DIR_WORK/$ID/out"
-	if [ -e $FN_CONF_NG_SITE ] ; then
-	    while read SITE ; do
-		CMD+=" --append_condor_requirements='(TARGET.GLIDEIN_Site isnt \"$SITE\")'"
-	    done <$FN_CONF_NG_SITE
-	fi
-	
-	CMD+=" file://$DIR_WORK/input/$FN_EXE_SIN ${VARS[*]}"
+	CMD+=" file://$DIR_WORK/input/$FN_EXE_MAC ${VARS[*]}"
 	test $VERBOSE = yes && echo "Jobsub command: $CMD"
 	$CMD
 	RET=$?
@@ -116,6 +114,6 @@ while read -a VARS ; do
 	cd       $DIR_WORK/$ID/local
 	export  CONDOR_DIR_INPUT=$DIR_WORK/input
 	export CONDOR_DIR_OUTPUT=$DIR_WORK/$ID/out
-	$DIR_WORK/input/$FN_EXE_SIN ${VARS[*]} 2>&1 | tee $DIR_WORK/$ID/log_job.txt
+	$DIR_WORK/input/$FN_EXE_MAC ${VARS[*]} 2>&1 | tee $DIR_WORK/$ID/log_job.txt
     fi
-done <$DIR_SCRIPT/$FN_ARG_LIST 2>&1 | tee log_execute_multiple.txt
+done <$DIR_SCRIPT/$FN_ARG_LIST 2>&1 | tee log_execute_submit.txt

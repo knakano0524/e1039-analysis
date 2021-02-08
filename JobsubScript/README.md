@@ -59,7 +59,7 @@ You have to set at least the following parameters at the beginning;
 - `DIR_INPUT`
 - `LIST_INPUT_FILES`
 
-### `execute_single.sh`
+### `execute_macro.sh`
 
 This script receives a set of parameters and execute your ROOT macro.
 Probably you should modify this script so that
@@ -69,42 +69,42 @@ Probably you should modify this script so that
 The handling of input/output files is limited since this script will be run on GRID.
 All output files that you want to keep have to be moved into `$CONDOR_DIR_OUTPUT`.
 
-### `execute_multiple.sh`
+### `execute_submit.sh`
 
-This script reads the parameter-list file and submits a job of `execute_single.sh` per parameter set.
-It simply passes a parameter set to `execute_single.sh` except one special case.
+This script reads the parameter-list file and submits a job of `execute_macro.sh` per parameter set.
+It simply passes a parameter set to `execute_macro.sh` except one special case.
 If a parameter starts with `/pnfs/` it is regarded as a file on pnfs and thus
 - The file is prepared to be transfered at the beginning of job (via `-f` of `jobsub_submit`) and
-- The file will be available under `$CONDOR_DIR_INPUT` in `execute_single.sh`.
+- The file will be available under `$CONDOR_DIR_INPUT` in `execute_macro.sh`.
 
 Therefore when you analyze (real or simulated) data file on pnfs you are recommended to include it in the parameter set.
 
-Actually this script does not submit any job by default but runs `execute_single.sh` locally for test.
+Actually this script does not submit any job by default but runs `execute_macro.sh` locally for test.
 ```
-./execute_multiple.sh -l 1-2
+./execute_submit.sh -l 1-2
 ```
 where `-l 1-2` means that only the 1st and 2nd lines of the parameter-list file are used (for test).
 Note that this script skips a parameter set if the output directory for the parameter set already exists.
 You can disable the skip by either using a `-o` option (`overwrite`) or manually deleting the output directory;
 ```
-./execute_multiple.sh -l 1-2 -o
+./execute_submit.sh -l 1-2 -o
 ```
 
 If the local test is successful, next you better try a test on GRID;
 ```
-./execute_multiple.sh -g -l 1-5
+./execute_submit.sh -g -l 1-5
 ```
 Using this small GRID test,
 you are recommended to confirm that the job outputs are reasonable and analyzable (via `check_output.sh` and `AnaOutput.C`).
 
 Then you submit a large number of jobs to GRID;
 ```
-./execute_multiple.sh -g -l 1-500
+./execute_submit.sh -g -l 1-500
 ```
 It is still better for you to use `-l` in order not to submit too many jobs at once.
 Or you can create multiple list files, in order to split job submissions, and use them via `-f`;
 ```
-./execute_multiple.sh -g -f list_argument_028700.txt
+./execute_submit.sh -g -f list_argument_028700.txt
 ```
 
 ## Check of Job Outputs

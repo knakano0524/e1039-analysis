@@ -1,8 +1,6 @@
-28700	/pnfs/e1039/persistent/kenichi/data_e906/digit_028700_009.root
-28701	/pnfs/e1039/persistent/kenichi/data_e906/digit_028701_009.root
-28702	/pnfs/e1039/persistent/kenichi/data_e906/digit_028702_009.root
-28703	/pnfs/e1039/persistent/kenichi/data_e906/digit_028703_009.root
-28704	/pnfs/e1039/persistent/kenichi/data_e906/digit_028704_009.root
-28705	/pnfs/e1039/persistent/kenichi/data_e906/digit_028705_009.root
-28706	/pnfs/e1039/persistent/kenichi/data_e906/digit_028706_009.root
-28707	/pnfs/e1039/persistent/kenichi/data_e906/digit_028707_009.root
+28700	/pnfs/e906/production/digit/R009/02/87/digit_028700_009.root
+28000	/pnfs/e906/production/digit/R009/02/80/digit_028000_009.root
+27000	/pnfs/e906/production/digit/R009/02/70/digit_027000_009.root
+26000	/pnfs/e906/production/digit/R009/02/60/digit_026000_009.root
+25000	/pnfs/e906/production/digit/R009/02/50/digit_025000_009.root
+24500	/pnfs/e906/production/digit/R009/02/45/digit_024500_009.root

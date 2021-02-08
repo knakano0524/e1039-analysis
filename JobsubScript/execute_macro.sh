@@ -15,8 +15,15 @@ tar xzf $CONDOR_DIR_INPUT/input.tar.gz
 echo "--- ls -lh -------------"
 ls -lh
 echo "------------------------"
+echo "--- ls -lh /usr/lib64 --"
+ls -lh /usr/lib64
+echo "------------------------"
 
-source /cvmfs/seaquest.opensciencegrid.org/seaquest/users/kenichi/e1039/core-20201228/this-e1039.sh
+FN_SETUP=/e906/app/software/osg/software/e1039/this-e1039.sh
+if [ ! -e $FN_SETUP ] ; then # On grid
+    FN_SETUP=/cvmfs/seaquest.opensciencegrid.org/seaquest/${FN_SETUP#/e906/app/software/osg/}
+fi
+source $FN_SETUP
 export LD_LIBRARY_PATH=inst/lib:$LD_LIBRARY_PATH
 
 time root -b -q "Fun4RealDst.C($ID, \"$FN_DATA\")" 2>&1 | tee $CONDOR_DIR_OUTPUT/log_macro.txt
@@ -28,4 +35,4 @@ fi
 
 mv output.root  $CONDOR_DIR_OUTPUT
 
-echo "execute_single.sh finished!"
+echo "execute_macro.sh finished!"

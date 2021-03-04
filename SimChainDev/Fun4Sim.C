@@ -274,14 +274,7 @@ int Fun4Sim(const int nevent = 10)
   dptrigger->set_road_set_file_name("$E1039_RESOURCE/trigger/trigger_67.txt");
   se->registerSubsystem(dptrigger);
 
-  // Event Filter
-//  EvtFilter *evt_filter = new EvtFilter();
-  //evt_filter->Verbosity(10);
-  //evt_filter->set_trigger_req(1<<5);
-//  se->registerSubsystem(evt_filter);
-
-  // trakcing module
-    // trakcing module
+  // Tracking module
   SQReco* reco = new SQReco();
   reco->Verbosity(0);
   //reco->set_geom_file_name("support/geom.root"); //not needed as it's created on the fly
@@ -299,6 +292,8 @@ int Fun4Sim(const int nevent = 10)
   se->registerSubsystem(reco);
 
   VertexFit* vertexing = new VertexFit();
+  //vertexing->enable_fit_target_center(); //uncomment if you want to fit in the target center
+  //vertexing->enableOptimization(); //uncomment if you want to fit according to new optimization formula
   se->registerSubsystem(vertexing);
 
   //// Trim minor data nodes (to reduce the DST file size)
@@ -320,7 +315,7 @@ int Fun4Sim(const int nevent = 10)
   // Output
   ///////////////////////////////////////////
 
-  // DST output manager, tunred off to save disk by default
+  // DST output manager
   Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", "DST.root");
   se->registerOutputManager(out);
 

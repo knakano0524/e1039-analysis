@@ -27,7 +27,7 @@ void Fun4SimTree(const char* fname="sim_tree.root", const char* tname="tree")
 
   gStyle->SetOptStat(0000);
 
-  tr->Draw("weight", "!std::isnan(weight)");
+  tr->Draw("weight");
   c1->SaveAs("result/h1_weight.png");
 
   DrawOneVar("mass", "dim_true.mom.M()", 44, 1, 5.4);
@@ -49,21 +49,21 @@ void DrawOneVar(const char* name, const char* var, const int N, const double X0,
 {
   TH1* h1_all = new TH1D("h1_all", "", N, X0, X1);
   h1_all->GetSumw2();
-  tr->Project("h1_all", var, "std::isnan(weight) ? 0 : weight");
+  tr->Project("h1_all", var, "weight");
   //h1_all->Draw("E1");
   //c1->SaveAs("result/h1_m_all.png");
 
   TH1* h1_rec = new TH1D("h1_rec", "", N, X0, X1);
   h1_rec->GetSumw2();
-  tr->Project("h1_rec", var, "(std::isnan(weight) || rec_stat!=0) ? 0 : weight");
+  tr->Project("h1_rec", var, "(rec_stat!=0) ? 0 : weight");
 
   TH1* h1_nim2 = new TH1D("h1_nim2", "", N, X0, X1);
   h1_nim2->GetSumw2();
-  tr->Project("h1_nim2", var, "(std::isnan(weight) || rec_stat!=0 || !nim2) ? 0 : weight");
+  tr->Project("h1_nim2", var, "(rec_stat!=0 || !nim2) ? 0 : weight");
 
   TH1* h1_fpga1 = new TH1D("h1_fpga1", "", N, X0, X1);
   h1_fpga1->GetSumw2();
-  tr->Project("h1_fpga1", var, "(std::isnan(weight) || rec_stat!=0 || !fpga1) ? 0 : weight");
+  tr->Project("h1_fpga1", var, "(rec_stat!=0 || !fpga1) ? 0 : weight");
 
   h1_all  ->SetLineColor(kBlack);
   h1_rec  ->SetLineColor(kRed);

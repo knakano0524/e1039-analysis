@@ -17,7 +17,8 @@ int Fun4SimMicroDst(const char* fn_udst="uDST.root")
 
   // Trigger Emulator
   DPTriggerAnalyzer* trig_emu = new DPTriggerAnalyzer();
-  trig_emu->set_road_set_file_name(gSystem->ExpandPathName("$E1039_RESOURCE/trigger/trigger_67.txt"));
+  //trig_emu->set_road_set_file_name("$E1039_RESOURCE/trigger/trigger_67.txt");
+  trig_emu->set_road_set_file_name("roads_0.txt");
   se->registerSubsystem(trig_emu);
 
   se->registerSubsystem(new AnaSimDst());

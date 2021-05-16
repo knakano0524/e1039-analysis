@@ -7,20 +7,18 @@
 #include "TreeData.h"
 class TFile;
 class TTree;
-class SQEvent;
-class SRecEvent;
 class SQMCEvent;
 class SQTrackVector;
 class SQDimuonVector;
+class SQHitVector;
 
 /// An example class to analyze the simulated uDST file.
 class AnaSimDst: public SubsysReco {
   /// Input
-  SQEvent       * mi_evt;
-  SRecEvent     * mi_srec;
   SQMCEvent     * mi_evt_true;
   SQTrackVector * mi_vec_trk;
   SQDimuonVector* mi_vec_dim;
+  SQHitVector   * mi_vec_hit;
 
   /// Output
   TFile* file;
@@ -30,6 +28,17 @@ class AnaSimDst: public SubsysReco {
   TrackList  mo_trk_reco;
   DimuonList mo_dim_true;
   DimuonList mo_dim_reco;
+
+  double mo_weight;
+  double mo_mass;
+  double mo_xF;
+  double mo_x1;
+  double mo_x2;
+  double mo_mom;
+  double mo_phi;
+  double mo_theta;
+  int    mo_road_pos;
+  int    mo_road_neg;
 
  public:
   AnaSimDst() {;}
@@ -42,10 +51,6 @@ class AnaSimDst: public SubsysReco {
  private:
   int GetNodes(PHCompositeNode *topNode);
   void MakeTree();
-
-  typedef std::map<int, int> IdMap_t; // For now the key is not ID but index.
-  void FindTrackRelation (IdMap_t& id_map);
-  void FindDimuonRelation(IdMap_t& id_map);
 };
 
 #endif /* _ANA_SIM_DST__H_ */

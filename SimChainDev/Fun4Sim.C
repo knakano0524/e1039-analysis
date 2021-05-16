@@ -177,7 +177,7 @@ int Fun4Sim(const int nevent = 10)
 
     if(drellyan_gen){
       e906legacy->set_xfRange(-0.15, 0.95); // (0.1, 0.5); //[-1.,1.]
-      e906legacy->set_massRange(1.5, 5.0); // (0.23, 10.0);// 0.22 and above
+      e906legacy->set_massRange(1.5, 10.0); // 5.0); // (0.23, 10.0);// 0.22 and above
       e906legacy->enableDrellYanGen();
     }
    

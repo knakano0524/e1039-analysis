@@ -48,6 +48,7 @@ do
     cmd="$cmd -L $work/$id/log/log.txt"
     cmd="$cmd -f $work/input.tar.gz"
     cmd="$cmd -d OUTPUT $work/$id/out"
+    cmd="$cmd --append_condor_requirements='(TARGET.GLIDEIN_Site isnt \"Clemson\")'"
     cmd="$cmd file://`which $work/$id/gridrun.sh` $nevents $id"
     echo "$cmd"
     $cmd
@@ -59,3 +60,10 @@ do
     cd -
   fi
 done 2>&1 | tee log_gridsub.txt
+
+## When your job fails due to bad grid nodes,
+## you can use the following option to exclude those nodes;
+##   cmd="$cmd --append_condor_requirements='(TARGET.GLIDEIN_Site isnt \"UCSD\")'"
+## Valid site names are listed here;
+## https://cdcvs.fnal.gov/redmine/projects/fife/wiki/Information_about_job_submission_to_OSG_sites
+## According to the Fermilab Service Desk, the "--blacklist" option has a known defect.

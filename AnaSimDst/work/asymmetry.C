@@ -4,7 +4,6 @@ const int N_PHI = 20;
 const int N_X2  = 10;
 const double X2_MIN = 0.00;
 const double X2_MAX = 0.20;
-//void CalcAngle(const TLorentzVector& mu0, const TLorentzVector& mu1, double& xb, double& xt, double& phi_s_tf);
 
 void asymmetry(const char* fname="sim_tree.root", const char* tname="tree")
 {
@@ -33,18 +32,12 @@ void asymmetry(const char* fname="sim_tree.root", const char* tname="tree")
   h2_phi_x2->Draw("colz");
   c1->SaveAs("result_asym/h2_phi_x2.png");
 
-  ofs << "Yield\n";
-  for (int i_x2 = 1; i_x2 <= N_X2; i_x2++) {
-    ofs << i_x2 << "\t" << h1_x2->GetBinContent(i_x2) << endl;
-  }
-  ofs << endl;
-
   ostringstream oss;
   oss << setfill('0');
   TH1* h1_asym = new TH1D("h1_asym", "GMC J/psi;x2;A_{N}", N_X2, X2_MIN, X2_MAX);//Sivers asymetry An
-  ofs << "A_N\n";
   for (int i_x2 = 1; i_x2 <= N_X2; i_x2++) {
     TH1* h1_phi = h2_phi_x2->ProjectionX("h1_phi", i_x2, i_x2);
+    double cnt_tot = h1_phi->Integral();
     h1_phi->Draw();
     h1_phi->SetMinimum(0);
     oss.str("");
@@ -56,6 +49,7 @@ void asymmetry(const char* fname="sim_tree.root", const char* tname="tree")
     delete h1_phi;
 
     double x2 = X2_MIN + (X2_MAX - X2_MIN) * (i_x2 - 0.5) / N_X2;
+    double x2_width = (X2_MAX - X2_MIN) / N_X2;
     float sum   = 0;
     float sum_N = 0;
     //float new_err=0;
@@ -98,7 +92,7 @@ void asymmetry(const char* fname="sim_tree.root", const char* tname="tree")
 
     h1_asym->SetBinContent(i_x2, asym_val);
     h1_asym->SetBinError  (i_x2, asym_err);
-    ofs << i_x2 << "\t" << x2 << "\t" << asym_val << "\t" << asym_err << endl;
+    ofs << i_x2 << "\t" << x2 << "\t" << x2_width/2 << "\t" << cnt_tot << "\t" << asym_val << "\t" << asym_err << endl;
   }
   gStyle->SetOptStat(0);
   gStyle->SetOptFit(true);

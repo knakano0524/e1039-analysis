@@ -7,7 +7,6 @@
 #include "TreeData.h"
 class TFile;
 class TTree;
-class PHGenIntegral;
 class SQEvent;
 class SRecEvent;
 class SQMCEvent;
@@ -17,7 +16,6 @@ class SQDimuonVector;
 /// An example class to analyze the simulated uDST file.
 class AnaSimDst: public SubsysReco {
   /// Input
-  PHGenIntegral * mi_gen_inte;
   SQEvent       * mi_evt;
   SRecEvent     * mi_srec;
   SQMCEvent     * mi_evt_true;
@@ -34,7 +32,7 @@ class AnaSimDst: public SubsysReco {
   DimuonList mo_dim_reco;
 
  public:
-  AnaSimDst() {;}
+  AnaSimDst();
   virtual ~AnaSimDst() {;}
   int Init(PHCompositeNode *topNode);
   int InitRun(PHCompositeNode *topNode);

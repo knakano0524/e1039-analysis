@@ -270,17 +270,17 @@ int Fun4Sim(const int nevent = 10)
   }
 
   // Trigger Emulator
-  DPTriggerAnalyzer* dptrigger = new DPTriggerAnalyzer();
-  dptrigger->set_hit_container_choice("Vector");
-  dptrigger->set_road_set_file_name(gSystem->ExpandPathName("$E1039_RESOURCE/trigger/trigger_67.txt"));
-  //dptrigger->Verbosity(99);
-  se->registerSubsystem(dptrigger);
+  //DPTriggerAnalyzer* dptrigger = new DPTriggerAnalyzer();
+  //dptrigger->set_hit_container_choice("Vector");
+  //dptrigger->set_road_set_file_name(gSystem->ExpandPathName("$E1039_RESOURCE/trigger/trigger_67.txt"));
+  ////dptrigger->Verbosity(99);
+  //se->registerSubsystem(dptrigger);
 
   // Event Filter
-  EvtFilter *evt_filter = new EvtFilter();
+  //EvtFilter *evt_filter = new EvtFilter();
   //evt_filter->Verbosity(10);
   //evt_filter->set_trigger_req(1<<5);
-  se->registerSubsystem(evt_filter);
+  //se->registerSubsystem(evt_filter);
 
   // trakcing module
     // trakcing module

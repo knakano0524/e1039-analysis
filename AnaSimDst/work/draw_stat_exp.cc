@@ -10,25 +10,46 @@
  */
 
 {
-  /// Parameters: 2020-09-24.
-  const int N_PT = 3;
-  const double VAL_X[N_PT] = { 0.05, 0.07, 0.09 };
-  const double VAL_Y[N_PT] = { 0, 0, 0 };
-  const double ERR_X[N_PT] = { 0.01, 0.01, 0.01 };
-  double ERR_Y[N_PT] = { 0.0154607, 0.00630896, 0.0112202 };
-  const double L_1s  = 1.643; // integrated luminosity of one simDST [/pb]
-  const double N_sim = 3997; // N of simDSTs
+  const double lumi_1w  = 1.75e4; // integrated luminosity in 1 week [/pb]
+  const double df       = 0.176; // dilution_factor
+  const double pol      = 0.8;   // polarization
 
-  const double L_sim = L_1s * N_sim; // integrated luminosity of simulation [/pb]
-  const double L_1w  = 1.75e4; // integrated luminosity in 1 week [/pb]
-  const double df    = 0.176; // dilution_factor
-  const double pol   = 0.8;   // polarization
-  const double X = sqrt(L_sim / L_1w) / df / pol;
-  cout << "Integrated luminosity of all simDSTs = " << L_sim << " /pb\n"
-       << "Error scaling factor = " << X << endl;
-  for (int ii = 0; ii < N_PT; ii++) ERR_Y[ii] *= X;
+  double lumi_sim;
+  ifstream ifs("lumi_tot.txt");
+  if (! ifs.is_open()) {
+    cout << "!ERROR!  Cannot open the luminosity file.  Abort." << endl;
+    exit(1);
+  }
+  ifs >> lumi_sim;
+  ifs.close();
+  double XX = sqrt(lumi_sim / lumi_1w) / df / pol;
+  cout << "Integrated luminosity of all simDSTs = " << lumi_sim << " /pb\n"
+       << "Error scaling factor = " << XX << endl;
 
-  TGraphErrors* gr = new TGraphErrors(N_PT, VAL_X, VAL_Y, ERR_X, ERR_Y);
+  int    n_pt = 0;
+  double val_x[99];
+  double val_y[99];
+  double err_x[99];
+  double err_y[99];
+  ifs.open("result_asym/result.txt");
+  if (! ifs.is_open()) {
+    cout << "!ERROR!  Cannot open the simulation result file.  Abort." << endl;
+    exit(1);
+  }
+  int idx;
+  double val_x2, err_x2, cnt, val_an, err_an;
+  while (ifs >> idx >> val_x2 >> err_x2 >> cnt >> val_an >> err_an) {
+    if (cnt < 10) continue;
+    double err_an_exp = err_an * XX;
+    val_x[n_pt] = val_x2;
+    val_y[n_pt] = 0;
+    err_x[n_pt] = err_x2;
+    err_y[n_pt] = err_an_exp;
+    n_pt++;
+  }
+  ifs.close();
+
+  TGraphErrors* gr = new TGraphErrors(n_pt, val_x, val_y, err_x, err_y);
   gr->SetMarkerStyle(21);
   gr->SetMarkerColor(kRed);
   gr->SetLineColor(kRed);
@@ -38,5 +59,5 @@
   c1->DrawFrame(0.0, -0.3, 0.2, 0.3, "J/#psi | One Week;x_{2};Anticipated accuracy of A_{N}: #delta_{AN}");
   gr->Draw("PE1same");
 
-  c1->SaveAs("gr_delta_an.png");
+  c1->SaveAs("result_asym/gr_delta_an.png");
 }

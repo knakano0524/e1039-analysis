@@ -3,6 +3,7 @@ using namespace std;
 
 EventData::EventData()
   : proc_id(0)
+  , weight(1.0)
   , nim1 (false)
   , fpga1(false)
   , trig_bits(0)
@@ -24,8 +25,12 @@ TrackData::TrackData()
   
 DimuonData::DimuonData() 
   : pdg_id(0)
+  , mass(0)
+  , pT(0)
   , x1(0)
   , x2(0)
+  , xF(0)
+  , costh(0)
   , phi_s(0)
   , phi_s_up(0)
 {

@@ -1,20 +1,16 @@
 /// Fun4SimDst.C:  Fun4all macro to analyze the E1039 simulated DST files.
-#if ROOT_VERSION_CODE >= ROOT_VERSION(6,00,0)
 R__LOAD_LIBRARY(libana_sim_dst)
-#endif
 
 int Fun4SimDst(const int   n_dst_ana=0,
                const char* fn_list_dst="list_dst.txt",
                const char* fn_udst="uDST.root")
 {
-  gSystem->Load("libana_sim_dst.so");
-
   Fun4AllServer* se = Fun4AllServer::instance();
   //se->Verbosity(1);
   Fun4AllInputManager *in = new Fun4AllDstInputManager("SimDst");
   se->registerInputManager(in);
 
-  se->registerSubsystem(new AnaRunInfo("lumi_list.txt", "lumi_tot.txt"));
+  se->registerSubsystem(new AnaSimRunInfo());
   //se->registerSubsystem(new FilterSimEvent());
 
   Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", fn_udst);
@@ -40,7 +36,6 @@ int Fun4SimDst(const int   n_dst_ana=0,
     string fn_dst = list_dst[i_dst];
     cout << "DST: " << i_dst << "/" << n_dst << ": " << fn_dst << endl;
     in->fileopen(fn_dst);
-    in->SetRunNumber(i_dst+1); /////  Trick to execute InitRun() per DST
     se->run();
   }
 

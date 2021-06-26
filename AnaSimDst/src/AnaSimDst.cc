@@ -2,7 +2,6 @@
 #include <TFile.h>
 #include <TTree.h>
 #include <TLorentzRotation.h>
-#include <phhepmc/PHGenIntegral.h>
 #include <interface_main/SQEvent.h>
 #include <interface_main/SQMCEvent.h>
 #include <interface_main/SQTrackVector.h>
@@ -14,6 +13,11 @@
 #include "AnaSimDst.h"
 using namespace std;
 
+AnaSimDst::AnaSimDst() : SubsysReco("AnaSimDst")
+{
+  ;
+}
+
 int AnaSimDst::Init(PHCompositeNode* topNode)
 {
   return Fun4AllReturnCodes::EVENT_OK;
@@ -23,14 +27,6 @@ int AnaSimDst::InitRun(PHCompositeNode* topNode)
 {
   int ret = GetNodes(topNode);
   if (ret != Fun4AllReturnCodes::EVENT_OK) return ret;
-
-  double lumi_inte = mi_gen_inte->get_Integrated_Lumi();
-  long   n_evt_gen = mi_gen_inte->get_N_Generator_Accepted_Event();
-  long   n_evt_pro = mi_gen_inte->get_N_Processed_Event();
-  cout << "Integrated luminosity = " << lumi_inte << " /pb\n"
-       << "N of gen. acc. events = " << n_evt_gen << "\n"
-       << "N of processed events = " << n_evt_pro << endl;
-
   MakeTree();
   return Fun4AllReturnCodes::EVENT_OK;
 }
@@ -54,6 +50,7 @@ int AnaSimDst::process_event(PHCompositeNode* topNode)
     mo_evt.par_id [ii] = mi_evt_true->get_particle_id      (ii);
     mo_evt.par_mom[ii] = mi_evt_true->get_particle_momentum(ii);
   }
+  mo_evt.weight     = mi_evt_true->get_weight();
   mo_evt.nim1       = mi_evt->get_trigger(SQEvent::NIM1);
   mo_evt.fpga1      = mi_evt->get_trigger(SQEvent::MATRIX1);
   mo_evt.trig_bits  = mi_evt->get_trigger();
@@ -104,7 +101,7 @@ int AnaSimDst::process_event(PHCompositeNode* topNode)
     dd.mom_pos = dim->get_mom_pos();
     dd.mom_neg = dim->get_mom_neg();
     if (fabs(dd.mom.M() - 3.097) < 0.001) dd.pdg_id = 443;
-    //UtilDimuon::GetX1X2(dim, dd.x1, dd.x2);
+    //UtilDimuon::CalcVar(dim, dd.mass, dd.pT, dd.x1, dd.x2, dd.xF, dd.costh, dd.phi);
     double x1mod, x2mod;
     double phi_s, phi_s_up;
     CalcAngle(dd.mom_pos, dd.mom_neg,       +1, x1mod, x2mod, phi_s_up);
@@ -147,10 +144,6 @@ int AnaSimDst::End(PHCompositeNode* topNode)
 
 int AnaSimDst::GetNodes(PHCompositeNode *topNode)
 {
-  mi_gen_inte = findNode::getClass<PHGenIntegral >(topNode, "PHGenIntegral");
-  if (!mi_gen_inte) {
-    return Fun4AllReturnCodes::ABORTEVENT;
-  }
   mi_evt      = findNode::getClass<SQEvent       >(topNode, "SQEvent");
   mi_srec     = findNode::getClass<SRecEvent     >(topNode, "SRecEvent");
   mi_evt_true = findNode::getClass<SQMCEvent     >(topNode, "SQMCEvent");

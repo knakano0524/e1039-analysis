@@ -44,7 +44,9 @@ int AnaSimDst::process_event(PHCompositeNode* topNode)
     mo_evt.par_id [ii] = mi_evt_true->get_particle_id      (ii);
     mo_evt.par_mom[ii] = mi_evt_true->get_particle_momentum(ii);
   }
-  mo_evt.weight     = mi_evt_true->get_weight();
+  if (mi_evt_true->get_weight() != 0) {
+    mo_evt.weight   = mi_evt_true->get_weight();
+  }
   mo_evt.trig_bits  = mi_evt->get_trigger();
   mo_evt.n_dim_true = mi_vec_dim->size();
 
@@ -98,7 +100,8 @@ int AnaSimDst::process_event(PHCompositeNode* topNode)
     dd.mom     = dim->get_mom();
     dd.mom_pos = dim->get_mom_pos();
     dd.mom_neg = dim->get_mom_neg();
-    UtilDimuon::CalcVar(dim, dd.mass, dd.pT, dd.x1, dd.x2, dd.xF, dd.costh, dd.phi);
+    UtilDimuon::CalcVar(dim, dd.mass, dd.pT, dd.x1, dd.x2, dd.xF);
+    UtilDimuon::Lab2CollinsSoper(dim, dd.costh, dd.phi);
     mo_dim_true.push_back(dd);
 
     if (mi_srec) {

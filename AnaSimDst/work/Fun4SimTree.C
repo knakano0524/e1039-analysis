@@ -2,17 +2,21 @@
 R__LOAD_LIBRARY(libana_sim_dst)
 
 using namespace std;
-const char* TYPE_GMC = "D-Y E906Gen"; // D-Y, J/#psi, E906Gen, PYTHIA, etc.
+TFile* file_out;
 TFile* file;
 TTree* tree;
 TCanvas* c1;
 double inte_lumi;
 void DrawDimTrueKin();
-void DrawDimRecoKin();
-void DrawTrkTrueKin();
-void DrawTrueVar(const string varname, const string title_x, const int n_x, const double x_lo, const double x_hi);
-void FitCosTheta();
-void AnaEvents();
+void MakeHist1D(const string name, const string cut, const string var_x, const string title_x, const int n_x, const double x_lo, const double x_hi);
+void MakeHist2D(const string name, const string cut, 
+  const string var_x, const string title_x, const int n_x, const double x_lo, const double x_hi,
+  const string var_y, const string title_y, const int n_y, const double y_lo, const double y_hi);
+void MakeHist3D(const string name, const string cut, 
+  const string var_x, const string title_x, const int n_x, const double x_lo, const double x_hi,
+  const string var_y, const string title_y, const int n_y, const double y_lo, const double y_hi,
+  const string var_z, const string title_z, const int n_z, const double z_lo, const double z_hi);
+
 double GetInteLumi(const char* fn_lumi="lumi_tot.txt");
 
 void Fun4SimTree(const char* fname="sim_tree.root", const char* tname="tree")
@@ -24,16 +28,15 @@ void Fun4SimTree(const char* fname="sim_tree.root", const char* tname="tree")
   c1->SetGrid();
   //c1->SetLogy(true);
 
+  file_out = new TFile("hist.root", "RECREATE");
+
   inte_lumi = GetInteLumi();
   cout << "Integrated luminosity = " << inte_lumi << endl;
 
-  /// You can use these functions or add new ones.
   DrawDimTrueKin();
-  //DrawDimRecoKin();
-  //DrawTrkTrueKin();
-  FitCosTheta();
-  //AnaEvents();
 
+  file_out->Write();
+  file_out->Close();
   exit(0);
 }
 
@@ -42,143 +45,125 @@ void Fun4SimTree(const char* fname="sim_tree.root", const char* tname="tree")
 ///
 void DrawDimTrueKin()
 {
+  c1->SetLogy(true);
   tree->Draw("n_dim_true");
   c1->SaveAs("result/h1_true_n_dim.png");
 
   const double PI = TMath::Pi();
-  DrawTrueVar("dim_true.pdg_id"    , "True dimuon PDG ID", 1000, 0, 0);
-  DrawTrueVar("dim_true.mom.X()"   , "True dimuon px (GeV)", 100, -5,   5);
-  DrawTrueVar("dim_true.mom.Y()"   , "True dimuon py (GeV)", 100, -5,   5);
-  DrawTrueVar("dim_true.mom.Z()"   , "True dimuon pz (GeV)", 100,  0, 100);
-  DrawTrueVar("dim_true.mom.M()"   , "True dimuon mass (GeV)", 100, 0, 5);
-  DrawTrueVar("dim_true.mom.Eta()" , "True dimuon #eta", 110, 0, 11);
-  DrawTrueVar("dim_true.mom.Phi()" , "True dimuon #phi", 100, -PI, PI);
-  DrawTrueVar("dim_true.x1"        , "True x1", 50, 0, 1);
-  DrawTrueVar("dim_true.x2"        , "True x2", 50, 0, 1);
-  DrawTrueVar("dim_true.xF"        , "True xF", 50, -1, 1);
-  DrawTrueVar("dim_true.costh"     , "True cos#theta", 50, -1, 1);
-  DrawTrueVar("dim_true.phi"       , "True #phi"     , 50, -PI, PI);
+  //MakeHist1D("vtx_x", "", "dim_true.pos.X()"   , "X-vertex", 100, -2, 2);
+  //MakeHist1D("vtx_y", "", "dim_true.pos.Y()"   , "Y-vertex", 100, -2, 2);
+  //MakeHist1D("vtx_z", "", "dim_true.pos.Z()"   , "Z-vertex", 100, -310, -290);
+  //MakeHist1D("px"      , "", "dim_true.mom.X()"   , "px"  , 50, -5, 5);
+  //MakeHist1D("py"      , "", "dim_true.mom.Y()"   , "py"  , 50, -5, 5);
+  MakeHist1D("pz"      , "dim_true.mom.M() > 4", "dim_true.mom.Z()"   , "pz @ M > 4"  , 30, 30, 120);
+  MakeHist1D("pT"      , "dim_true.mom.M() > 4", "dim_true.mom.Perp()", "pT @ M > 4"  , 25, 0,   5);
+  MakeHist1D("mass"    ,                     "", "dim_true.mom.M()"   , "Mass"        , 20, 0,  10);
+  MakeHist1D("phi"     , "dim_true.mom.M() > 4", "dim_true.mom.Phi()" , "#phi @ M > 4", 30, -PI, PI);
+  //MakeHist1D("x1"      , "", "dim_true.x1"        , "x1"        , 50,  0.0, 1.0);
+  //MakeHist1D("x2"      , "", "dim_true.x2"        , "x2"        , 25,  0.0, 0.5);
+  MakeHist1D("xF"      , "dim_true.mom.M() > 4", "dim_true.xF"        , "xF @ M > 4"  , 30, -0.5, 1.0);
+  //MakeHist1D("cs_costh", "", "dim_true.costh"     , "cos#theta in C-S frame", 50, -1, 1);
+  //MakeHist1D("cs_phi"  , "", "dim_true.phi"       , "#phi in C-S frame"     , 50, 0, 2*PI);
+
+  gStyle->SetOptStat(0);
+
+  MakeHist2D("pz_mass", "", "dim_true.mom.Z()"   , "pz", 18, 30, 120 , "dim_true.mom.M()", "Mass", 4, 2, 6);
+  MakeHist2D("xF_mass", "", "dim_true.xF"        , "xF", 15, -0.5, 1 , "dim_true.mom.M()", "Mass", 4, 2, 6);
+  MakeHist2D("pT_mass", "", "dim_true.mom.Perp()", "pT", 10, 0, 5    , "dim_true.mom.M()", "Mass", 4, 2, 6);
+  MakeHist2D("x1_x2"  , "", "dim_true.x1"        , "x1", 14, 0.3, 1.0, "dim_true.x2"     , "x2"  , 4, 0.0, 0.4);
+
+  MakeHist3D("pz_pT_mass", "", "dim_true.mom.Z()", "pz", 18, 30, 120, "dim_true.mom.Perp()", "pT", 5, 0, 5, "dim_true.mom.M()", "Mass", 4, 2, 6);
+  MakeHist3D("phi_costh_mass", "", "dim_true.phi", "#phi in C-S frame", 30, 0, 2*PI, "dim_true.costh", "cos#theta in C-S frame", 30, -1, 1, "dim_true.mom.M()", "Mass", 4, 2, 6);
 }
 
-void DrawDimRecoKin()
+void MakeHist1D(const string name, const string cut, const string var_x, const string title_x, const int n_x, const double x_lo, const double x_hi)
 {
-  tree->Draw("n_dim_reco", "weight");
-  c1->SaveAs("result/h1_reco_n_dim.png");
-
-  tree->Draw("rec_stat", "weight"); // cf. GlobalConsts.h.
-  c1->SaveAs("result/h1_rec_stat.png");
-  
-  tree->Draw("trig_bits", "weight * (rec_stat==0)");
-  c1->SaveAs("result/h1_trig_bits.png");
-
-  tree->Draw("dim_reco.mom.M()", "weight * (rec_stat==0)");
-  c1->SaveAs("result/h1_dim_reco_mass.png");
-
-  tree->Draw("dim_reco.x1", "weight * (rec_stat==0)");
-  c1->SaveAs("result/h1_dim_reco_x1.png");
-
-  tree->Draw("dim_reco.x2", "weight * (rec_stat==0)");
-  c1->SaveAs("result/h1_dim_reco_x2.png");
-}
-
-
-void DrawTrkTrueKin()
-{
-  DrawTrueVar("dim_true.mom_pos.X()", "True px (GeV) of mu+", 100, -5, 5);
-  DrawTrueVar("dim_true.mom_pos.Y()", "True py (GeV) of mu+", 100, -5, 5);
-  DrawTrueVar("dim_true.mom_pos.Z()", "True pz (GeV) of mu+", 100,  0, 100);
-  DrawTrueVar("dim_true.mom_neg.X()", "True px (GeV) of mu-", 100, -5, 5);
-  DrawTrueVar("dim_true.mom_neg.Y()", "True py (GeV) of mu-", 100, -5, 5);
-  DrawTrueVar("dim_true.mom_neg.Z()", "True pz (GeV) of mu-", 100,  0, 100);
-
-  THStack* hs;
-  TH1* h1_all = new TH1D("h1_all", "", 100, -1, 1);
-  TH1* h1_rec = new TH1D("h1_rec", "", 100, -1, 1);
-  tree->Project("h1_all", "(dim_true.mom_pos.Z() - dim_true.mom_neg.Z())/(dim_true.mom_pos.Z() + dim_true.mom_neg.Z())", "weight");
-  tree->Project("h1_rec", "(dim_true.mom_pos.Z() - dim_true.mom_neg.Z())/(dim_true.mom_pos.Z() + dim_true.mom_neg.Z())", "weight * (rec_stat==0)");
-
   ostringstream oss;
-  oss << TYPE_GMC << " GMC;gpz+gpz (GeV) of tracks;N of tracks";
-  hs = new THStack("hs", oss.str().c_str());
-  hs->Add(h1_all);
-  hs->Add(h1_rec);
-  h1_rec->SetLineColor(kRed);
-  hs->Draw("nostack");
-  c1->SaveAs("result/h1_trk_true_pz_asym.png");
-}
-
-void DrawTrueVar(const string varname, const string title_x, const int n_x, const double x_lo, const double x_hi)
-{
-  TH1* h1_all = new TH1D("h1_all", "", n_x, x_lo, x_hi);
-  TH1* h1_rec = new TH1D("h1_rec", "", n_x, x_lo, x_hi);
-  tree->Project("h1_all", varname.c_str(), "weight");
-  tree->Project("h1_rec", varname.c_str(), "weight * (rec_stat==0)");
-
-  ostringstream oss;
-  oss << TYPE_GMC << " GMC;" << title_x << ";Yield";
-  THStack hs("hs", oss.str().c_str());
-  hs.Add(h1_all);
-  hs.Add(h1_rec);
-  h1_rec->SetLineColor(kRed);
-  hs.Draw("nostack");
+  oss << "h1_" << name;
+  string name_h1 = oss.str();
+  TH1* h1 = new TH1D(name_h1.c_str(), "", n_x, x_lo, x_hi);
 
   oss.str("");
-  oss << "result/h1_";
-  for (string::const_iterator it = varname.begin(); it != varname.end(); it++) {
-    switch (*it) { // modify bad chars for file name
-    case '.': case '*': case '/': oss << '_'; break;
-    case '(': case ')': case ' ': /* omit */ break;
-    default: oss << *it;
-    }
-  }
-  oss << ".png";
+  oss << ";" << title_x << ";Rate (pb)";
+  h1->SetTitle(oss.str().c_str());
+
+  oss.str("");
+  oss << "weight * (n_dim_true == 1";
+  if (cut.length() > 0) oss << " && " << cut;
+  oss << ")";
+  string par_cut = oss.str();
+
+  tree->Project(name_h1.c_str(), var_x.c_str(), par_cut.c_str());
+  h1->Scale(1/inte_lumi);
+  h1->SetLineColor(kRed);
+  h1->Draw("E1");
+
+  c1->SetLogy(false);
+
+  oss.str("");
+  oss << "result/" << name_h1 << ".png";
   c1->SaveAs(oss.str().c_str());
-
-  delete h1_all;
-  delete h1_rec;
 }
 
-void FitCosTheta()
+void MakeHist2D(const string name, const string cut, 
+  const string var_x, const string title_x, const int n_x, const double x_lo, const double x_hi,
+  const string var_y, const string title_y, const int n_y, const double y_lo, const double y_hi)
 {
-  gStyle->SetOptFit(true);
-  TH1* h1_costh = new TH1D("h1_costh", "", 100, -1, 1);
-  tree->Project("h1_costh", "dim_true.costh", "weight");
-  h1_costh->Scale(1/inte_lumi);
-  TF1* f1 = new TF1("f1", "[0]*(1 + [1]*pow(x,2))", -0.8, 0.8);
-  f1->SetParameters(h1_costh->Integral()/h1_costh->GetNbinsX(), 1.0);
-  h1_costh->Fit(f1, "REM");
-
   ostringstream oss;
-  oss << TYPE_GMC << " GMC;True cos#theta;Yield";
-  h1_costh->SetTitle(oss.str().c_str());
-  c1->SaveAs("result/h1_costh_fit.png");
-  delete f1;
-  delete h1_costh;
+  oss << "h2_" << name;
+  string name_h2 = oss.str();
+  TH2* h2 = new TH2D(name_h2.c_str(), "", n_x, x_lo, x_hi,  n_y, y_lo, y_hi);
+
+  oss.str("");
+  oss << ";" << title_x << ";" << title_y << ";Rate (pb)";
+  h2->SetTitle(oss.str().c_str());
+
+  oss.str("");
+  oss << "weight * (n_dim_true == 1";
+  if (cut.length() > 0) oss << " && " << cut;
+  oss << ")";
+  string par_cut = oss.str();
+
+  oss.str("");
+  oss << var_y << ":" << var_x;
+  tree->Project(name_h2.c_str(), oss.str().c_str(), par_cut.c_str());
+  h2->Scale(1/inte_lumi);
+  h2->Draw("colz");
+
+  oss.str("");
+  oss << "result/" << name_h2 << ".png";
+  c1->SaveAs(oss.str().c_str());
 }
 
-void AnaEvents()
+void MakeHist3D(const string name, const string cut, 
+  const string var_x, const string title_x, const int n_x, const double x_lo, const double x_hi,
+  const string var_y, const string title_y, const int n_y, const double y_lo, const double y_hi,
+  const string var_z, const string title_z, const int n_z, const double z_lo, const double z_hi)
 {
-  typedef map<int, int> IntCount_t;
-  IntCount_t id_cnt;
-  DimuonList* list_dim = new DimuonList();
-  tree->SetBranchAddress("dim_true", &list_dim);
+  ostringstream oss;
+  oss << "h3_" << name;
+  string name_h3 = oss.str();
+  TH3* h3 = new TH3D(name_h3.c_str(), "", n_x, x_lo, x_hi,  n_y, y_lo, y_hi,  n_z, z_lo, z_hi);
 
-  int n_ent = tree->GetEntries();
-  cout << "AnaEvents(): n = " << n_ent << endl;
-  for (int i_ent = 0; i_ent < n_ent; i_ent++) {
-    if ((i_ent+1) % (n_ent/10) == 0) cout << "  " << 100*(i_ent+1)/n_ent << "%" << flush;
-    tree->GetEntry(i_ent);
-    for (DimuonList::iterator it = list_dim->begin(); it != list_dim->end(); it++) {
-      DimuonData* dd = &(*it);
-      int pdg_id = dd->pdg_id;
-      if (id_cnt.find(pdg_id) == id_cnt.end()) id_cnt[pdg_id] = 1;
-      else                                     id_cnt[pdg_id]++;
-    }
-  }
-  cout << endl;
-  for (IntCount_t::iterator it = id_cnt.begin(); it != id_cnt.end(); it++) {
-    cout << setw(10) << it->first << "  " << setw(10) << it->second << endl;
-  }
+  oss.str("");
+  oss << "Rate (pb);" << title_x << ";" << title_y << ";" << title_z;
+  h3->SetTitle(oss.str().c_str());
+
+  oss.str("");
+  oss << "weight * (n_dim_true == 1";
+  if (cut.length() > 0) oss << " && " << cut;
+  oss << ")";
+  string par_cut = oss.str();
+
+  oss.str("");
+  oss << var_z << ":" << var_y << ":" << var_x;
+  tree->Project(name_h3.c_str(), oss.str().c_str(), par_cut.c_str());
+  h3->Scale(1/inte_lumi);
+  h3->Draw("BOX");
+
+  oss.str("");
+  oss << "result/" << name_h3 << ".png";
+  c1->SaveAs(oss.str().c_str());
 }
 
 double GetInteLumi(const char* fn_lumi)

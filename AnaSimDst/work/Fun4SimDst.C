@@ -1,7 +1,8 @@
 /// Fun4SimDst.C:  Fun4all macro to analyze the E1039 simulated DST files.
 R__LOAD_LIBRARY(libana_sim_dst)
 
-int Fun4SimDst(const int   n_dst_ana=0,
+int Fun4SimDst(const bool  req_acc=false,
+               const int   n_dst_ana=0,
                const char* fn_list_dst="list_dst.txt",
                const char* fn_udst="uDST.root")
 {
@@ -13,6 +14,14 @@ int Fun4SimDst(const int   n_dst_ana=0,
   se->registerSubsystem(new AnaSimRunInfo());
 
   //se->registerSubsystem(new FilterSimEvent());
+
+  /// Save only events that are in the geometric acceptance.
+  if (req_acc) {
+    SQGeomAcc* geom_acc = new SQGeomAcc();
+    geom_acc->SetMuonMode(SQGeomAcc::PAIR); // PAIR, PAIR_TBBT, SINGLE, SINGLE_T, etc.
+    geom_acc->SetPlaneMode(SQGeomAcc::HODO_CHAM); // HODO, CHAM or HODO_CHAM
+    se->registerSubsystem(geom_acc);
+  }
 
   Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", fn_udst);
   se->registerOutputManager(out);
@@ -42,5 +51,5 @@ int Fun4SimDst(const int   n_dst_ana=0,
 
   se->End();
   delete se;
-  return 0;
+  exit(0);
 }

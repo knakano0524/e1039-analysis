@@ -14,5 +14,5 @@ int Fun4SimMicroDst(const char* fn_udst="uDST.root")
   se->run();
   se->End();
   delete se;
-  return 0;
+  exit(0);
 }

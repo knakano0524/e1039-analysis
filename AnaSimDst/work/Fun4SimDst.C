@@ -20,6 +20,7 @@ int Fun4SimDst(const bool  req_acc=false,
     SQGeomAcc* geom_acc = new SQGeomAcc();
     geom_acc->SetMuonMode(SQGeomAcc::PAIR); // PAIR, PAIR_TBBT, SINGLE, SINGLE_T, etc.
     geom_acc->SetPlaneMode(SQGeomAcc::HODO_CHAM); // HODO, CHAM or HODO_CHAM
+    geom_acc->SetNumOfH1EdgeElementsExcluded(4);
     se->registerSubsystem(geom_acc);
   }
 

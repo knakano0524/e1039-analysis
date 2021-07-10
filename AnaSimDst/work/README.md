@@ -7,6 +7,9 @@ Use `e1039-analysis/SimChainDev` to generate two sets of events;
  - `acc` = A set of events in acceptance
 
 Here `acc` is made with `SQGeomAccLoose`.
+A typical size of the two sets is
+ - 10k events *  100 jobs for `4pi` and
+ - 20k events * 1000 jobs for `acc`.
 
 ## Processing `4pi` event set
 
@@ -25,7 +28,7 @@ root -b ../Fun4SimTree.C
 mkdir  acc
 cd acc
 ../make-dst-list.sh ../../../SimChainDev/data/dy_acc_20210704_0*
-root -b '../Fun4SimDst.C(true)'
+root -b ../Fun4SimDst.C
 root -b ../Fun4SimMicroDst.C
 root -b ../Fun4SimTree.C
 ```

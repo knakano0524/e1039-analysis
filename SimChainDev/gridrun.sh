@@ -27,8 +27,8 @@ pwd | tee -a out.txt $CONDOR_DIR_OUTPUT/out.txt
 tar -xzvf $CONDOR_DIR_INPUT/input.tar.gz
 ls -lh | tee -a out.txt $CONDOR_DIR_OUTPUT/out.txt
 
-#FN_SETUP=/e906/app/software/osg/software/e1039/this-e1039.sh
-FN_SETUP=/e906/app/software/osg/users/kenichi/e1039/core-20210705/this-e1039.sh
+FN_SETUP=/e906/app/software/osg/software/e1039/this-e1039.sh
+#FN_SETUP=/e906/app/software/osg/users/kenichi/e1039/core-20210705/this-e1039.sh
 if [ ! -e $FN_SETUP ] ; then # On grid
     FN_SETUP=/cvmfs/seaquest.opensciencegrid.org/seaquest/${FN_SETUP#/e906/app/software/osg/}
 fi
@@ -43,6 +43,6 @@ if [ $RET -ne 0 ] ; then
     exit $RET
 fi
 
-mv *.root $CONDOR_DIR_OUTPUT/
+mv *.root *.tsv $CONDOR_DIR_OUTPUT/
 
 echo "gridrun.sh finished!"

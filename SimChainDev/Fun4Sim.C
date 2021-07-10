@@ -194,8 +194,8 @@ int Fun4Sim(const int nevent = 10)
     const bool Psip_gen = false;  
 
     if(drellyan_gen){
-      e906legacy->set_xfRange(0.1, 0.5); //[-1.,1.]
-      e906legacy->set_massRange(0.23, 10.0);// 0.22 and above     
+      e906legacy->set_xfRange(-0.5, 1.0);
+      e906legacy->set_massRange(1.5, 10.0);// 0.22 and above     
       e906legacy->enableDrellYanGen();
     }
    
@@ -260,8 +260,6 @@ int Fun4Sim(const int nevent = 10)
 
   se->registerSubsystem(g4Reco);
 
-  se->registerSubsystem(new SQGeomAccLoose());
-
   // save truth info to the Node Tree
   PHG4TruthSubsystem *truth = new PHG4TruthSubsystem();
   g4Reco->registerSubsystem(truth);
@@ -274,10 +272,11 @@ int Fun4Sim(const int nevent = 10)
   se->registerSubsystem(digitizer);
 
   /// Save only events that are in the geometric acceptance.
-  //SQGeomAcc* geom_acc = new SQGeomAcc();
-  //geom_acc->SetMuonMode(SQGeomAcc::PAIR_TBBT); // PAIR, PAIR_TBBT, SINGLE, SINGLE_T, etc.
-  //geom_acc->SetPlaneMode(SQGeomAcc::HODO_CHAM); // HODO, CHAM or HODO_CHAM
-  //se->registerSubsystem(geom_acc);
+  SQGeomAcc* geom_acc = new SQGeomAcc();
+  geom_acc->SetMuonMode(SQGeomAcc::PAIR);
+  geom_acc->SetPlaneMode(SQGeomAcc::HODO_CHAM);
+  geom_acc->SetNumOfH1EdgeElementsExcluded(4);
+  se->registerSubsystem(geom_acc);
 
   // Make SQ nodes for truth info
   se->registerSubsystem(new TruthNodeMaker());

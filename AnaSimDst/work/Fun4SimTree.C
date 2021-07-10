@@ -129,6 +129,9 @@ void MakeHist2D(const string name, const string cut,
   tree->Project(name_h2.c_str(), oss.str().c_str(), par_cut.c_str());
   h2->Scale(1/inte_lumi);
   h2->Draw("colz");
+  //h2->SetMarkerSize(2.0); // = text size (1.0 by default)
+  gStyle->SetPaintTextFormat("3.2f");
+  h2->Draw("TEXTsame");
 
   oss.str("");
   oss << "result/" << name_h2 << ".png";

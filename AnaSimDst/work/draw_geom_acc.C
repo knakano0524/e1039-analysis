@@ -180,6 +180,9 @@ void Draw3DSlice(const string varname)
     h3_ratio->GetZaxis()->SetRange(iz, iz);
     TH1* h2 = h3_ratio->Project3D("yx");
     h2->Draw("colz");
+    //h2->SetMarkerSize(2.0); // = text size (1.0 by default)
+    gStyle->SetPaintTextFormat("3.0f");
+    h2->Draw("TEXTsame");
 
     oss.str("");
     oss << "Geometric acceptance (%) @ " << h3_ratio->GetZaxis()->GetTitle() << " = "

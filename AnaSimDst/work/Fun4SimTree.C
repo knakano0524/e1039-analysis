@@ -50,9 +50,9 @@ void DrawDimTrueKin()
   c1->SaveAs("result/h1_true_n_dim.png");
 
   const double PI = TMath::Pi();
-  //MakeHist1D("vtx_x", "", "dim_true.pos.X()"   , "X-vertex", 100, -2, 2);
-  //MakeHist1D("vtx_y", "", "dim_true.pos.Y()"   , "Y-vertex", 100, -2, 2);
-  //MakeHist1D("vtx_z", "", "dim_true.pos.Z()"   , "Z-vertex", 100, -310, -290);
+  MakeHist1D("vtx_x", "", "dim_true.pos.X()"   , "X-vertex", 100, -2, 2);
+  MakeHist1D("vtx_y", "", "dim_true.pos.Y()"   , "Y-vertex", 100, -2, 2);
+  MakeHist1D("vtx_z", "", "dim_true.pos.Z()"   , "Z-vertex", 100, -310, -290);
   //MakeHist1D("px"      , "", "dim_true.mom.X()"   , "px"  , 50, -5, 5);
   //MakeHist1D("py"      , "", "dim_true.mom.Y()"   , "py"  , 50, -5, 5);
   MakeHist1D("pz"      , "dim_true.mom.M() > 4", "dim_true.mom.Z()"   , "pz @ M > 4"  , 30, 30, 120);

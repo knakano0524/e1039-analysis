@@ -40,15 +40,15 @@ int Fun4Sim(const int nevent = 10)
   const double KMAGSTR = -0.951;
 
  //! particle generator flag
-  const bool gen_pythia8  = true; // false;
+  const bool gen_pythia8  = false;
   const bool gen_cosmic   = false;
   const bool gen_gun      = false;
   const bool gen_particle = false;
   const bool read_hepmc   = false;
-  const bool gen_e906legacy = false; //E906LegacyGen()
+  const bool gen_e906legacy = true; //E906LegacyGen()
 
   //! vtx gen flag
-  const bool legacyVtxGen = false; // true;
+  const bool legacyVtxGen = true;
   
   recoConsts *rc = recoConsts::instance();
   rc->set_DoubleFlag("FMAGSTR", FMAGSTR);
@@ -63,12 +63,11 @@ int Fun4Sim(const int nevent = 10)
   }
   if(legacyVtxGen)
   {
-    rc->set_BoolFlag("TARGETONLY", false);
+    rc->set_BoolFlag("TARGETONLY", true); // false
     rc->set_BoolFlag("DUMPONLY", false);
   }
   rc->Print();
 
-  GeomSvc::UseDbSvc(true);
   GeomSvc *geom_svc = GeomSvc::instance();
   //const double x0_shift = 0.0; //cm 
   //std::cout << "D2X::X0: " << geom_svc->getDetectorX0("D2X") << std::endl;
